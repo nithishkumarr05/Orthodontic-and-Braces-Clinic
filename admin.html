@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
+    <title>OrthoSmile Dental | Admin Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%B7%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'dental-blue': '#1A5276',
+                        'dental-teal': '#1ABC9C',
+                        'dental-light': '#F0F8FF',
+                        'dental-dark': '#0B1E26',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.7); }
+        .dark input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.7); }
+
+        html, body { overflow-x: hidden; }
+        body {
+            background-color: #F0F8FF;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark body { background-color: #0B1E26; color: #E2E8F0; }
+
+        /* Sidebar */
+        #sidebar { transition: transform 0.3s ease; }
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100dvh;
+                width: 18rem;
+                max-width: 85vw;
+                z-index: 70;
+                transform: translateX(-100%);
+                overflow-y: auto;
+            }
+            #sidebar.open { transform: translateX(0); }
+            [dir="rtl"] #sidebar { left: auto; right: 0; transform: translateX(100%); }
+            [dir="rtl"] #sidebar.open { transform: translateX(0); }
+        }
+        #mobile-overlay {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            position: fixed;
+            inset: 0;
+            z-index: 65;
+        }
+        #mobile-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* Sidebar links */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            color: #4A6070;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin-bottom: 0.25rem;
+        }
+        .dark .sidebar-link { color: #94A3B8; }
+        .sidebar-link:hover {
+            background: rgba(26, 188, 156, 0.08);
+            color: #1ABC9C;
+        }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #1A5276, #1ABC9C);
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -8px rgba(26,188,156,0.5);
+        }
+        .sidebar-link.active svg, .sidebar-link.active i { color: #FFFFFF; }
+        [dir="rtl"] .sidebar-link { flex-direction: row-reverse; }
+
+        /* Cards */
+        .dash-card {
+            background: #FFFFFF;
+            border: 1px solid #E2EBF0;
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px -4px rgba(26,82,118,0.06);
+        }
+        .dark .dash-card {
+            background: #14262F;
+            border-color: #1E3844;
+        }
+        .dash-card:hover {
+            border-color: #1ABC9C;
+            box-shadow: 0 12px 28px -12px rgba(26,188,156,0.25);
+        }
+
+        /* Progress bar */
+        .prog-bar {
+            height: 8px;
+            border-radius: 9999px;
+            background: #E2EBF0;
+            overflow: hidden;
+        }
+        .dark .prog-bar { background: #1E3844; }
+        .prog-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #1A5276, #1ABC9C);
+            transition: width 0.6s ease;
+        }
+
+        /* Badges */
+        .badge-teal { background: rgba(26,188,156,0.12); color: #1ABC9C; }
+        .badge-blue { background: rgba(26,82,118,0.12); color: #1A5276; }
+        .dark .badge-blue { background: rgba(26,188,156,0.15); color: #1ABC9C; }
+        .badge-amber { background: rgba(245,158,11,0.15); color: #B45309; }
+        .dark .badge-amber { background: rgba(245,158,11,0.20); color: #FBBF24; }
+        .badge-red { background: rgba(239,68,68,0.12); color: #DC2626; }
+        .dark .badge-red { background: rgba(239,68,68,0.18); color: #F87171; }
+        .badge-green { background: rgba(16,185,129,0.12); color: #059669; }
+        .dark .badge-green { background: rgba(16,185,129,0.18); color: #34D399; }
+        .badge-purple { background: rgba(139,92,246,0.12); color: #7C3AED; }
+        .dark .badge-purple { background: rgba(139,92,246,0.18); color: #A78BFA; }
+
+        /* Section visibility */
+        .admin-section { display: block; }
+        .admin-section.hidden { display: none; }
+
+        /* Buttons */
+        .btn-teal {
+            background: #1ABC9C;
+            color: #0B1E26;
+            font-weight: 700;
+            transition: all 0.25s ease;
+        }
+        .btn-teal:hover {
+            background: #16A085;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(26,188,156,0.5);
+        }
+        .btn-outline-teal {
+            border: 1.5px solid #1ABC9C;
+            color: #1ABC9C;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .btn-outline-teal:hover {
+            background: #1ABC9C;
+            color: #0B1E26;
+        }
+        .btn-outline-gray {
+            border: 1.5px solid #CBD5E1;
+            color: #4A6070;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .dark .btn-outline-gray {
+            border-color: #334155;
+            color: #94A3B8;
+        }
+        .btn-outline-gray:hover {
+            border-color: #1ABC9C;
+            color: #1ABC9C;
+        }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #CBD5E1;
+            border-radius: 9999px;
+            transition: 0.3s;
+        }
+        .dark .switch-slider { background: #334155; }
+        .switch-slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .switch input:checked + .switch-slider { background: #1ABC9C; }
+        .switch input:checked + .switch-slider::before { transform: translateX(20px); }
+        [dir="rtl"] .switch input:checked + .switch-slider::before { transform: translateX(-20px); }
+        [dir="rtl"] .switch-slider::before { left: auto; right: 3px; }
+
+        /* Scroll helpers */
+        .hide-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .hide-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
+        .dark .hide-scroll::-webkit-scrollbar-thumb { background: #334155; }
+
+        /* Chart container */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 260px;
+        }
+        @media (min-width: 640px) { .chart-box { height: 280px; } }
+
+        /* Table styling */
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th {
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #94A3B8;
+            font-weight: 700;
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid #E2EBF0;
+            white-space: nowrap;
+        }
+        .dark .admin-table th { border-color: #1E3844; }
+        .admin-table td {
+            padding: 0.9rem 0.5rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #F1F5F9;
+            color: #4A6070;
+            white-space: nowrap;
+        }
+        .dark .admin-table td { border-color: #1E3844; color: #94A3B8; }
+        [dir="rtl"] .admin-table th { text-align: right; }
+        [dir="rtl"] .admin-table td { text-align: right; }
+
+        /* Timeline */
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1ABC9C;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 0 0 2px #1ABC9C;
+            flex-shrink: 0;
+        }
+        .dark .timeline-dot { border-color: #14262F; }
+
+        /* Calendar grid */
+        .cal-cell {
+            aspect-ratio: 1 / 1;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #4A6070;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .dark .cal-cell { color: #94A3B8; }
+        .cal-cell:hover { background: rgba(26,188,156,0.08); color: #1ABC9C; }
+        .cal-cell.today {
+            background: linear-gradient(135deg, #1A5276, #1ABC9C);
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+        .cal-cell.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #1ABC9C;
+        }
+        .cal-cell.today::after { background: #FFFFFF; }
+        .cal-cell.muted { color: #CBD5E1; }
+        .dark .cal-cell.muted { color: #334155; }
+
+        /* Touch-friendly */
+        @media (max-width: 640px) {
+            button, a.sidebar-link, .tap { min-height: 44px; }
+            .admin-table td, .admin-table th { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-dental-dark border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
+
+            <div class="flex items-center gap-3 min-w-0">
+                <button id="mobile-menu-open" class="lg:hidden p-2 rounded-xl hover:bg-dental-light dark:hover:bg-white/5 transition" aria-label="Open menu">
+                    <i class="fas fa-bars text-lg text-dental-blue dark:text-white"></i>
+                </button>
+                <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-md shadow-dental-teal/25" style="background-color:#1A5276;">
+                        <i class="fas fa-smile-beam text-dental-teal text-sm sm:text-base"></i>
+                    </div>
+                    <div class="hidden xs:block">
+                        <span class="text-base sm:text-lg font-bold text-dental-blue dark:text-white leading-tight block">
+                            Ortho<span style="color:#1ABC9C;">Care</span>
+                        </span>
+                        <span class="text-[9px] tracking-[0.18em] uppercase text-gray-400 font-semibold block">Admin Console</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <div class="hidden md:flex items-center gap-2 bg-dental-light dark:bg-white/5 px-3 py-2 rounded-full">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-medium text-dental-blue dark:text-gray-300 whitespace-nowrap">System Online &middot; 12 staff active</span>
+                </div>
+
+                <!-- Notifications -->
+                <button class="relative w-9 h-9 rounded-full hover:bg-dental-light dark:hover:bg-white/5 transition flex items-center justify-center text-dental-blue dark:text-gray-300" title="Notifications">
+                    <i class="fas fa-bell text-sm"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"></span>
+                </button>
+
+                <button id="rtl-toggle" class="w-9 h-9 rounded-full hover:bg-dental-light dark:hover:bg-white/5 transition flex items-center justify-center text-dental-blue dark:text-gray-300" title="Toggle RTL">
+                    <i class="fas fa-exchange-alt text-sm"></i>
+                </button>
+
+                <button id="theme-toggle" class="w-9 h-9 rounded-full hover:bg-dental-light dark:hover:bg-white/5 transition flex items-center justify-center text-dental-blue dark:text-gray-300" title="Toggle Theme">
+                    <i class="fas fa-moon light-icon"></i>
+                    <i class="fas fa-sun dark-icon hidden"></i>
+                </button>
+
+                <div class="flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-800">
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#0B1E26,#1A5276);">
+                        DR
+                    </div>
+                    <div class="hidden sm:block">
+                        <p class="text-xs sm:text-sm font-semibold text-dental-blue dark:text-white leading-tight">Dr. Ryan Patel</p>
+                        <p class="text-[10px] text-gray-400">Clinic Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-overlay" class="lg:hidden"></div>
+
+    <!-- ================= MAIN LAYOUT ================= -->
+    <main class="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
+
+            <!-- ============ SIDEBAR ============ -->
+            <aside id="sidebar" class="lg:sticky lg:top-24 lg:h-fit w-72 flex-shrink-0 bg-white dark:bg-dental-dark lg:bg-transparent lg:dark:bg-transparent">
+                <div class="dash-card p-4 sm:p-5 h-full lg:h-auto">
+                    <div class="flex lg:hidden justify-between items-center mb-5">
+                        <span class="font-bold text-dental-teal">Admin Menu</span>
+                        <button id="mobile-menu-close" class="p-2 hover:bg-dental-light dark:hover:bg-white/5 rounded-lg" aria-label="Close menu">
+                            <i class="fas fa-times text-dental-blue dark:text-white"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 pb-4 mb-4 border-b border-gray-200 dark:border-gray-800">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:linear-gradient(135deg,#0B1E26,#1A5276);">
+                            DR
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm text-dental-blue dark:text-white truncate">Dr. Ryan Patel</p>
+                            <p class="text-[11px] text-gray-400 truncate">admin@OrthoSmile.com</p>
+                        </div>
+                    </div>
+
+                    <nav class="flex flex-col gap-0.5">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold px-3 mb-2">Clinic Control</p>
+
+                        <a href="#" data-section="overview" class="sidebar-link active">
+                            <i class="fas fa-th-large w-5 text-center"></i>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <a href="#" data-section="patients" class="sidebar-link">
+                            <i class="fas fa-users w-5 text-center"></i>
+                            <span>Patients</span>
+                            <span class="ml-auto bg-dental-teal text-dental-dark text-[10px] font-bold px-2 py-0.5 rounded-full">482</span>
+                        </a>
+
+                        <a href="#" data-section="appointments" class="sidebar-link">
+                            <i class="fas fa-calendar-check w-5 text-center"></i>
+                            <span>Appointments</span>
+                            <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">8</span>
+                        </a>
+
+                        <a href="#" data-section="dentists" class="sidebar-link">
+                            <i class="fas fa-user-md w-5 text-center"></i>
+                            <span>Dentists & Staff</span>
+                        </a>
+
+                        <a href="#" data-section="treatments" class="sidebar-link">
+                            <i class="fas fa-tooth w-5 text-center"></i>
+                            <span>Treatments</span>
+                        </a>
+
+                        <a href="#" data-section="payments" class="sidebar-link">
+                            <i class="fas fa-credit-card w-5 text-center"></i>
+                            <span>Payments & Billing</span>
+                        </a>
+
+                        <a href="#" data-section="reports" class="sidebar-link">
+                            <i class="fas fa-chart-line w-5 text-center"></i>
+                            <span>Reports</span>
+                        </a>
+
+                        <a href="#" data-section="settings" class="sidebar-link">
+                            <i class="fas fa-cog w-5 text-center"></i>
+                            <span>Clinic Settings</span>
+                        </a>
+
+                        <a href="login.html" id="logoutBtn" class="sidebar-link mt-3 border-t border-gray-200 dark:border-gray-800 pt-3 !text-red-500 hover:!bg-red-500 hover:!text-white">
+                            <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                            <span>Logout</span>
+                        </a>
+                    </nav>
+
+                    <div class="mt-5 p-4 rounded-2xl text-white" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                        <i class="fas fa-bolt text-xl mb-2 text-white/90"></i>
+                        <p class="text-xs font-semibold mb-1">Quick Action</p>
+                        <p class="text-[11px] text-white/80 leading-snug mb-3">Register a new patient or walk-in.</p>
+                        <button id="quickAddPatient" class="block w-full text-center text-[11px] font-bold bg-white text-dental-blue rounded-full py-2 hover:bg-dental-light transition">
+                            + New Patient
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ============ CONTENT ============ -->
+            <div class="flex-1 min-w-0 space-y-5 sm:space-y-6">
+
+                <!-- Welcome -->
+                <div class="mb-2 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-serif font-bold text-dental-blue dark:text-white">Admin Dashboard�</h1>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Manage patients, appointments, staff, and clinic performance in one place.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm" data-nav="appointments">
+                            <i class="fas fa-calendar-plus mr-1"></i> New Appointment
+                        </button>
+                        <button class="btn-outline-teal px-4 py-2.5 rounded-full text-xs sm:text-sm" data-nav="patients">
+                            <i class="fas fa-user-plus mr-1"></i> Add Patient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============ OVERVIEW ============ -->
+                <div id="overview" class="admin-section space-y-5 sm:space-y-6">
+
+                    <!-- Stat cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Total Patients</p>
+                                    <p class="text-lg sm:text-2xl font-bold text-dental-blue dark:text-white mt-1">482</p>
+                                    <p class="text-[10px] sm:text-xs text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>24 this month</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                    <i class="fas fa-users" style="color:#1ABC9C;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Today's Appts</p>
+                                    <p class="text-lg sm:text-2xl font-bold text-dental-blue dark:text-white mt-1">18</p>
+                                    <p class="text-[10px] sm:text-xs text-amber-600 font-semibold mt-1">6 pending</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,0.12);">
+                                    <i class="fas fa-clock" style="color:#D97706;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Monthly Revenue</p>
+                                    <p class="text-lg sm:text-2xl font-bold text-dental-blue dark:text-white mt-1">$42.8K</p>
+                                    <p class="text-[10px] sm:text-xs text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>12.4%</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,82,118,0.10);">
+                                    <i class="fas fa-dollar-sign" style="color:#1A5276;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Active Treatments</p>
+                                    <p class="text-lg sm:text-2xl font-bold text-dental-blue dark:text-white mt-1">156</p>
+                                    <p class="text-[10px] sm:text-xs text-dental-teal font-semibold mt-1">On track</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                    <i class="fas fa-tooth" style="color:#1ABC9C;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="dash-card p-5 sm:p-6 xl:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-chart-line text-dental-teal mr-2"></i>Revenue & Appointments
+                                </h3>
+                                <select class="text-xs bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 rounded-lg px-2 py-1 text-dental-blue dark:text-gray-300 focus:outline-none">
+                                    <option>Last 6 months</option>
+                                    <option>This year</option>
+                                    <option>Last 30 days</option>
+                                </select>
+                            </div>
+                            <div class="chart-box flex flex-col mt-4">
+    <!-- Y-axis and Bars -->
+    <div class="flex-1 flex items-end gap-2 sm:gap-4 h-full relative">
+        <!-- Grid lines -->
+        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+        </div>
+        
+        <!-- Bars -->
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 60%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 40%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Jan</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 75%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 50%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Feb</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 65%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 45%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Mar</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 80%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 55%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Apr</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 85%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 60%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">May</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[40px] bg-dental-blue/10 dark:bg-white/10 rounded-t-md relative flex items-end justify-center group-hover:bg-dental-blue/20 transition-colors" style="height: 100%">
+                <div class="w-full max-w-[40px] bg-dental-teal rounded-t-md absolute bottom-0" style="height: 70%"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Jun</span>
+        </div>
+    </div>
+    <!-- Legend -->
+    <div class="flex justify-center gap-4 mt-4 text-[10px] sm:text-xs font-bold text-gray-500">
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded bg-dental-teal"></div> Revenue ()</div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded bg-dental-blue/10 dark:bg-white/10 border border-gray-200 dark:border-gray-700"></div> Appointments</div>
+    </div>
+</div>
+                        </div>
+
+                        <div class="dash-card p-5 sm:p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-chart-pie text-dental-teal mr-2"></i>Treatments
+                                </h3>
+                            </div>
+                            <div class="chart-box flex flex-col justify-center h-full pb-4">
+    <div class="space-y-4">
+        <div>
+            <div class="flex justify-between text-xs font-bold mb-1"><span class="text-dental-blue dark:text-white">Invisalign</span><span class="text-dental-teal">34%</span></div>
+            <div class="w-full h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-dental-teal rounded-full" style="width: 34%"></div></div>
+        </div>
+        <div>
+            <div class="flex justify-between text-xs font-bold mb-1"><span class="text-dental-blue dark:text-white">Braces</span><span class="text-blue-500">20%</span></div>
+            <div class="w-full h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width: 20%"></div></div>
+        </div>
+        <div>
+            <div class="flex justify-between text-xs font-bold mb-1"><span class="text-dental-blue dark:text-white">Whitening</span><span class="text-amber-500">12%</span></div>
+            <div class="w-full h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full" style="width: 12%"></div></div>
+        </div>
+        <div>
+            <div class="flex justify-between text-xs font-bold mb-1"><span class="text-dental-blue dark:text-white">Implants</span><span class="text-red-500">8%</span></div>
+            <div class="w-full h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-red-500 rounded-full" style="width: 8%"></div></div>
+        </div>
+        <div>
+            <div class="flex justify-between text-xs font-bold mb-1"><span class="text-dental-blue dark:text-white">General</span><span class="text-purple-500">26%</span></div>
+            <div class="w-full h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-purple-500 rounded-full" style="width: 26%"></div></div>
+        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent appointments + today's schedule -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="dash-card p-5 sm:p-6 xl:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-list-check text-dental-teal mr-2"></i>Recent Appointments
+                                </h3>
+                                <button class="text-dental-teal text-xs font-bold hover:underline" data-nav="appointments">View all</button>
+                            </div>
+                            <div class="hide-scroll overflow-x-auto">
+                                <table class="admin-table min-w-[640px]">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Treatment</th>
+                                            <th>Dentist</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="font-semibold text-dental-blue dark:text-white">Jane Doe</td>
+                                            <td>Invisalign Adjustment</td>
+                                            <td>Dr. Sarah Malik</td>
+                                            <td>Apr 28, 10:30 AM</td>
+                                            <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Confirmed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-dental-blue dark:text-white">Michael Chen</td>
+                                            <td>Root Canal</td>
+                                            <td>Dr. Ryan Patel</td>
+                                            <td>Apr 28, 11:15 AM</td>
+                                            <td><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">Pending</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-dental-blue dark:text-white">Sofia Garcia</td>
+                                            <td>Teeth Whitening</td>
+                                            <td>Dr. Emily Chen</td>
+                                            <td>Apr 28, 1:00 PM</td>
+                                            <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Confirmed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-dental-blue dark:text-white">David Kim</td>
+                                            <td>Routine Cleaning</td>
+                                            <td>Dr. Sarah Malik</td>
+                                            <td>Apr 28, 2:30 PM</td>
+                                            <td><span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Checked-in</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-dental-blue dark:text-white">Amara Okafor</td>
+                                            <td>Implant Consultation</td>
+                                            <td>Dr. Ryan Patel</td>
+                                            <td>Apr 29, 9:00 AM</td>
+                                            <td><span class="badge-blue text-[10px] font-bold px-2 py-0.5 rounded-full">Scheduled</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Today's schedule calendar -->
+                        <div class="dash-card p-5 sm:p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-calendar-day text-dental-teal mr-2"></i>April 2026
+                                </h3>
+                                <div class="flex gap-1">
+                                    <button class="w-7 h-7 rounded-lg hover:bg-dental-light dark:hover:bg-white/5 flex items-center justify-center text-gray-400 text-xs"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="w-7 h-7 rounded-lg hover:bg-dental-light dark:hover:bg-white/5 flex items-center justify-center text-gray-400 text-xs"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-7 gap-1 mb-2 text-center text-[10px] font-bold text-gray-400 uppercase">
+                                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1">
+                                <div class="cal-cell muted">29</div>
+                                <div class="cal-cell muted">30</div>
+                                <div class="cal-cell muted">31</div>
+                                <div class="cal-cell">1</div>
+                                <div class="cal-cell">2</div>
+                                <div class="cal-cell has-event">3</div>
+                                <div class="cal-cell has-event">4</div>
+                                <div class="cal-cell">5</div>
+                                <div class="cal-cell has-event">6</div>
+                                <div class="cal-cell">7</div>
+                                <div class="cal-cell has-event">8</div>
+                                <div class="cal-cell">9</div>
+                                <div class="cal-cell has-event">10</div>
+                                <div class="cal-cell">11</div>
+                                <div class="cal-cell">12</div>
+                                <div class="cal-cell has-event">13</div>
+                                <div class="cal-cell">14</div>
+                                <div class="cal-cell has-event">15</div>
+                                <div class="cal-cell">16</div>
+                                <div class="cal-cell has-event">17</div>
+                                <div class="cal-cell">18</div>
+                                <div class="cal-cell has-event">19</div>
+                                <div class="cal-cell has-event">20</div>
+                                <div class="cal-cell has-event">21</div>
+                                <div class="cal-cell has-event">22</div>
+                                <div class="cal-cell">23</div>
+                                <div class="cal-cell has-event">24</div>
+                                <div class="cal-cell has-event">25</div>
+                                <div class="cal-cell has-event">26</div>
+                                <div class="cal-cell">27</div>
+                                <div class="cal-cell today">28</div>
+                                <div class="cal-cell has-event">29</div>
+                                <div class="cal-cell has-event">30</div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <span class="w-2 h-2 rounded-full bg-dental-teal"></span>
+                                    <span>8 appointments today</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                    <span>2 urgent &middot; pending confirmation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PATIENTS ============ -->
+                <div id="patients" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-users text-dental-teal mr-2"></i>Patient Management
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">482 total patients &middot; 24 new this month</p>
+                            </div>
+                            <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                                <i class="fas fa-user-plus mr-1"></i> Register Patient
+                            </button>
+                        </div>
+
+                        <!-- Search & filter -->
+                        <div class="flex flex-col sm:flex-row gap-3 mb-5">
+                            <div class="relative flex-1">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm rtl:left-auto rtl:right-4"></i>
+                                <input type="text" id="patientSearch" placeholder="Search by name, ID, or email..." class="w-full pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <select id="patientFilter" class="px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                                <option value="">All Treatments</option>
+                                <option value="Invisalign">Invisalign</option>
+                                <option value="Braces">Braces</option>
+                                <option value="Whitening">Whitening</option>
+                                <option value="Implants">Implants</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="hide-scroll overflow-x-auto">
+                            <table class="admin-table min-w-[860px]" id="patientsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>ID</th>
+                                        <th>Treatment</th>
+                                        <th>Dentist</th>
+                                        <th>Next Visit</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-treatment="Invisalign">
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">JD</div>
+                                                <div>
+                                                    <p class="font-semibold text-dental-blue dark:text-white">Jane Doe</p>
+                                                    <p class="text-[11px] text-gray-400">jane.doe@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>#OR-8421</td>
+                                        <td><span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Invisalign</span></td>
+                                        <td>Dr. Sarah Malik</td>
+                                        <td>Apr 28, 10:30 AM</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span></td>
+                                        <td>
+                                            <div class="flex gap-1">
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-teal" title="View"><i class="fas fa-eye text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-blue dark:text-gray-300" title="Edit"><i class="fas fa-pen text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-red-500/10 flex items-center justify-center text-red-500" title="Delete"><i class="fas fa-trash text-xs"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-treatment="Braces">
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">MC</div>
+                                                <div>
+                                                    <p class="font-semibold text-dental-blue dark:text-white">Michael Chen</p>
+                                                    <p class="text-[11px] text-gray-400">m.chen@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>#OR-8420</td>
+                                        <td><span class="badge-blue text-[10px] font-bold px-2 py-0.5 rounded-full">Braces</span></td>
+                                        <td>Dr. Ryan Patel</td>
+                                        <td>Apr 28, 11:15 AM</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span></td>
+                                        <td>
+                                            <div class="flex gap-1">
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-teal"><i class="fas fa-eye text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-blue dark:text-gray-300"><i class="fas fa-pen text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-red-500/10 flex items-center justify-center text-red-500"><i class="fas fa-trash text-xs"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-treatment="Whitening">
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#F59E0B,#D97706);">SG</div>
+                                                <div>
+                                                    <p class="font-semibold text-dental-blue dark:text-white">Sofia Garcia</p>
+                                                    <p class="text-[11px] text-gray-400">s.garcia@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>#OR-8419</td>
+                                        <td><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">Whitening</span></td>
+                                        <td>Dr. Emily Chen</td>
+                                        <td>Apr 28, 1:00 PM</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span></td>
+                                        <td>
+                                            <div class="flex gap-1">
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-teal"><i class="fas fa-eye text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-blue dark:text-gray-300"><i class="fas fa-pen text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-red-500/10 flex items-center justify-center text-red-500"><i class="fas fa-trash text-xs"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-treatment="General">
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">DK</div>
+                                                <div>
+                                                    <p class="font-semibold text-dental-blue dark:text-white">David Kim</p>
+                                                    <p class="text-[11px] text-gray-400">d.kim@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>#OR-8418</td>
+                                        <td><span class="badge-purple text-[10px] font-bold px-2 py-0.5 rounded-full">General</span></td>
+                                        <td>Dr. Sarah Malik</td>
+                                        <td>Apr 28, 2:30 PM</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span></td>
+                                        <td>
+                                            <div class="flex gap-1">
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-teal"><i class="fas fa-eye text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-blue dark:text-gray-300"><i class="fas fa-pen text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-red-500/10 flex items-center justify-center text-red-500"><i class="fas fa-trash text-xs"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-treatment="Implants">
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">AO</div>
+                                                <div>
+                                                    <p class="font-semibold text-dental-blue dark:text-white">Amara Okafor</p>
+                                                    <p class="text-[11px] text-gray-400">a.okafor@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>#OR-8417</td>
+                                        <td><span class="badge-red text-[10px] font-bold px-2 py-0.5 rounded-full">Implants</span></td>
+                                        <td>Dr. Ryan Patel</td>
+                                        <td>Apr 29, 9:00 AM</td>
+                                        <td><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">Pending</span></td>
+                                        <td>
+                                            <div class="flex gap-1">
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-teal"><i class="fas fa-eye text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-dental-light dark:hover:bg-white/10 flex items-center justify-center text-dental-blue dark:text-gray-300"><i class="fas fa-pen text-xs"></i></button>
+                                                <button class="w-8 h-8 rounded-lg hover:bg-red-500/10 flex items-center justify-center text-red-500"><i class="fas fa-trash text-xs"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ APPOINTMENTS ============ -->
+                <div id="appointments" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-calendar-check text-dental-teal mr-2"></i>Appointment Management
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">18 appointments today &middot; 6 pending confirmation</p>
+                            </div>
+                            <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap" id="newApptBtn">
+                                <i class="fas fa-plus mr-1"></i> New Appointment
+                            </button>
+                        </div>
+
+                        <!-- Tabs -->
+                        <div class="flex flex-wrap gap-2 mb-5">
+                            <button class="appt-tab btn-teal px-4 py-2 rounded-full text-xs font-bold" data-tab="today">Today (18)</button>
+                            <button class="appt-tab btn-outline-gray px-4 py-2 rounded-full text-xs font-bold" data-tab="upcoming">Upcoming (42)</button>
+                            <button class="appt-tab btn-outline-gray px-4 py-2 rounded-full text-xs font-bold" data-tab="pending">Pending (6)</button>
+                            <button class="appt-tab btn-outline-gray px-4 py-2 rounded-full text-xs font-bold" data-tab="completed">Completed</button>
+                        </div>
+
+                        <!-- Timeline list -->
+                        <div class="space-y-3" id="apptList">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                                        <span class="text-[10px] font-bold uppercase">10:30</span>
+                                        <span class="text-[9px] opacity-80">AM</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Jane Doe &middot; Invisalign Adjustment</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Dr. Sarah Malik &middot; Room 3 &middot; 45 min</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <span class="badge-green text-[10px] font-bold px-2 py-1 rounded-full self-center">Confirmed</span>
+                                    <button class="btn-outline-gray px-3 py-1.5 rounded-lg text-[11px] font-bold">Edit</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#F59E0B,#D97706);">
+                                        <span class="text-[10px] font-bold uppercase">11:15</span>
+                                        <span class="text-[9px] opacity-80">AM</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Michael Chen &middot; Root Canal</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Dr. Ryan Patel &middot; Room 1 &middot; 90 min</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <span class="badge-amber text-[10px] font-bold px-2 py-1 rounded-full self-center">Pending</span>
+                                    <button class="btn-outline-gray px-3 py-1.5 rounded-lg text-[11px] font-bold">Edit</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">
+                                        <span class="text-[10px] font-bold uppercase">1:00</span>
+                                        <span class="text-[9px] opacity-80">PM</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Sofia Garcia &middot; Teeth Whitening</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Dr. Emily Chen &middot; Room 2 &middot; 60 min</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <span class="badge-green text-[10px] font-bold px-2 py-1 rounded-full self-center">Confirmed</span>
+                                    <button class="btn-outline-gray px-3 py-1.5 rounded-lg text-[11px] font-bold">Edit</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                                        <span class="text-[10px] font-bold uppercase">2:30</span>
+                                        <span class="text-[9px] opacity-80">PM</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">David Kim &middot; Routine Cleaning</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Dr. Sarah Malik &middot; Room 3 &middot; 30 min</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-1 rounded-full self-center">Checked-in</span>
+                                    <button class="btn-outline-gray px-3 py-1.5 rounded-lg text-[11px] font-bold">Edit</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">
+                                        <span class="text-[10px] font-bold uppercase">4:00</span>
+                                        <span class="text-[9px] opacity-80">PM</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Amara Okafor &middot; Implant Consult</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Dr. Ryan Patel &middot; Room 1 &middot; 45 min</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <span class="badge-blue text-[10px] font-bold px-2 py-1 rounded-full self-center">Scheduled</span>
+                                    <button class="btn-outline-gray px-3 py-1.5 rounded-lg text-[11px] font-bold">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ DENTISTS & STAFF ============ -->
+                <div id="dentists" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-user-md text-dental-teal mr-2"></i>Dentists & Staff
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">12 team members &middot; 8 currently on shift</p>
+                            </div>
+                            <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                                <i class="fas fa-user-plus mr-1"></i> Add Staff
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#2980B9);">SM</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Dr. Sarah Malik</p>
+                                        <p class="text-[11px] text-gray-400">Orthodontist</p>
+                                    </div>
+                                    <span class="ml-auto badge-green text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">On Shift</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Patients</p><p class="font-bold text-dental-blue dark:text-white">142</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">4.9 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0" style="background:linear-gradient(135deg,#D97706,#F59E0B);">RP</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Dr. Ryan Patel</p>
+                                        <p class="text-[11px] text-gray-400">Oral Surgeon</p>
+                                    </div>
+                                    <span class="ml-auto badge-green text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">On Shift</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Patients</p><p class="font-bold text-dental-blue dark:text-white">98</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">4.8 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0" style="background:linear-gradient(135deg,#7C3AED,#8B5CF6);">EC</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Dr. Emily Chen</p>
+                                        <p class="text-[11px] text-gray-400">Cosmetic Dentist</p>
+                                    </div>
+                                    <span class="ml-auto badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">Break</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Patients</p><p class="font-bold text-dental-blue dark:text-white">76</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">5.0 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">LM</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Lisa Martinez</p>
+                                        <p class="text-[11px] text-gray-400">Dental Hygienist</p>
+                                    </div>
+                                    <span class="ml-auto badge-green text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">On Shift</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Cleaning</p><p class="font-bold text-dental-blue dark:text-white">24 today</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">4.9 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JW</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">James Wu</p>
+                                        <p class="text-[11px] text-gray-400">Front Desk</p>
+                                    </div>
+                                    <span class="ml-auto badge-blue text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">Off</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Check-ins</p><p class="font-bold text-dental-blue dark:text-white">18</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">4.7 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">NK</div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-dental-blue dark:text-white text-sm truncate">Nina Kapoor</p>
+                                        <p class="text-[11px] text-gray-400">Treatment Coordinator</p>
+                                    </div>
+                                    <span class="ml-auto badge-green text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">On Shift</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div><p class="text-gray-400">Consults</p><p class="font-bold text-dental-blue dark:text-white">6 today</p></div>
+                                    <div><p class="text-gray-400">Rating</p><p class="font-bold text-dental-blue dark:text-white">4.9 &#9733;</p></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">View</button>
+                                    <button class="flex-1 btn-outline-gray py-2 rounded-lg text-[11px] font-bold">Schedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ TREATMENTS ============ -->
+                <div id="treatments" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-tooth text-dental-teal mr-2"></i>Treatment Catalog
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Manage treatments, pricing, and active cases</p>
+                            </div>
+                            <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                                <i class="fas fa-plus mr-1"></i> Add Treatment
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                        <i class="fas fa-teeth" style="color:#1ABC9C;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">Invisalign</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">Clear aligner therapy &middot; 6&ndash;18 months</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">Active Cases</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">64</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:72%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$4,800</span>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,82,118,0.10);">
+                                        <i class="fas fa-teeth-open" style="color:#1A5276;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">Traditional Braces</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">Metal or ceramic &middot; 12&ndash;24 months</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">Active Cases</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">38</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:48%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$3,900</span>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,0.12);">
+                                        <i class="fas fa-star" style="color:#D97706;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">Teeth Whitening</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">In-office + take-home trays</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">Monthly Cases</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">22</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:35%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$650</span>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(239,68,68,0.12);">
+                                        <i class="fas fa-screwdriver-wrench" style="color:#DC2626;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">Dental Implants</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">Single & multiple &middot; 3&ndash;6 months</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">Active Cases</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">16</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:20%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$3,200</span>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(139,92,246,0.12);">
+                                        <i class="fas fa-tooth" style="color:#7C3AED;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">General Dentistry</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">Cleanings, fillings, checkups</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">Monthly Visits</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">186</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:88%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$180</span>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                        <i class="fas fa-shield-heart" style="color:#1ABC9C;"></i>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                                </div>
+                                <h3 class="font-bold text-dental-blue dark:text-white text-base">Emergency Care</h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5 mb-3">Same-day urgent treatment</p>
+                                <div class="flex justify-between text-xs mb-2">
+                                    <span class="text-gray-400">This Month</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">28</span>
+                                </div>
+                                <div class="prog-bar mb-3"><div class="prog-fill" style="width:42%"></div></div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-400">Avg Price</span>
+                                    <span class="font-bold text-dental-teal">$420</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PAYMENTS ============ -->
+                <div id="payments" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-credit-card text-dental-teal mr-2"></i>Payments & Billing
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Track revenue, installments, and outstanding balances</p>
+                            </div>
+                            <button class="btn-teal px-4 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                                <i class="fas fa-download mr-1"></i> Export Report
+                            </button>
+                        </div>
+
+                        <!-- Summary cards -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <div class="dash-card p-5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Monthly Revenue</p>
+                                <p class="text-2xl font-bold text-dental-blue dark:text-white mt-1">$42,840</p>
+                                <p class="text-[11px] text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>12.4% vs last month</p>
+                            </div>
+                            <div class="dash-card p-5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Outstanding</p>
+                                <p class="text-2xl font-bold text-dental-blue dark:text-white mt-1">$18,260</p>
+                                <p class="text-[11px] text-amber-600 font-semibold mt-1">Across 42 patients</p>
+                            </div>
+                            <div class="dash-card p-5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Pending Refunds</p>
+                                <p class="text-2xl font-bold text-dental-blue dark:text-white mt-1">$1,240</p>
+                                <p class="text-[11px] text-gray-500 font-semibold mt-1">6 requests open</p>
+                            </div>
+                        </div>
+
+                        <!-- Recent transactions -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Recent Transactions</h3>
+                        <div class="hide-scroll overflow-x-auto">
+                            <table class="admin-table min-w-[760px]">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice</th>
+                                        <th>Patient</th>
+                                        <th>Treatment</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8421-04</td>
+                                        <td>Jane Doe</td>
+                                        <td>Invisalign</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$200.00</td>
+                                        <td>Visa &bull;&bull;&bull;&bull; 4821</td>
+                                        <td>Apr 15, 2026</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8420-02</td>
+                                        <td>Michael Chen</td>
+                                        <td>Braces</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$350.00</td>
+                                        <td>Mastercard &bull;&bull;&bull;&bull; 2094</td>
+                                        <td>Apr 14, 2026</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8419-01</td>
+                                        <td>Sofia Garcia</td>
+                                        <td>Whitening</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$650.00</td>
+                                        <td>Visa &bull;&bull;&bull;&bull; 7788</td>
+                                        <td>Apr 13, 2026</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8417-05</td>
+                                        <td>Amara Okafor</td>
+                                        <td>Implants</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$1,200.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>Apr 12, 2026</td>
+                                        <td><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8418-03</td>
+                                        <td>David Kim</td>
+                                        <td>General</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$180.00</td>
+                                        <td>Visa &bull;&bull;&bull;&bull; 3140</td>
+                                        <td>Apr 11, 2026</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">#INV-8416-01</td>
+                                        <td>Liam Johnson</td>
+                                        <td>Emergency</td>
+                                        <td class="font-bold text-dental-blue dark:text-white">$420.00</td>
+                                        <td>Cash</td>
+                                        <td>Apr 10, 2026</td>
+                                        <td><span class="badge-red text-[10px] font-bold px-2 py-0.5 rounded-full">Refunded</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ REPORTS ============ -->
+                <div id="reports" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-chart-line text-dental-teal mr-2"></i>Clinic Reports
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Performance, revenue, and patient analytics</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <select class="text-xs bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 rounded-lg px-3 py-2 text-dental-blue dark:text-gray-300 focus:outline-none">
+                                    <option>Last 30 days</option>
+                                    <option>Last 6 months</option>
+                                    <option>This year</option>
+                                </select>
+                                <button class="btn-teal px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap">
+                                    <i class="fas fa-file-export mr-1"></i> Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- KPI grid -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="dash-card p-4">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">New Patients</p>
+                                <p class="text-xl font-bold text-dental-blue dark:text-white mt-1">24</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>18%</p>
+                            </div>
+                            <div class="dash-card p-4">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Appointments</p>
+                                <p class="text-xl font-bold text-dental-blue dark:text-white mt-1">412</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>9%</p>
+                            </div>
+                            <div class="dash-card p-4">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Avg. Treatment</p>
+                                <p class="text-xl font-bold text-dental-blue dark:text-white mt-1">$1,240</p>
+                                <p class="text-[10px] text-red-500 font-semibold mt-1"><i class="fas fa-arrow-down mr-1"></i>3%</p>
+                            </div>
+                            <div class="dash-card p-4">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Retention</p>
+                                <p class="text-xl font-bold text-dental-blue dark:text-white mt-1">94%</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold mt-1"><i class="fas fa-arrow-up mr-1"></i>2%</p>
+                            </div>
+                        </div>
+
+                        <!-- Chart -->
+                        <div class="chart-box flex flex-col mt-4 mb-6">
+    <div class="flex-1 flex items-end gap-2 sm:gap-4 h-full relative">
+        <!-- Grid lines -->
+        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
+        </div>
+        
+        <!-- Bars -->
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 60%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Jan</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 75%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Feb</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 65%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Mar</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 85%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Apr</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 95%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">May</span>
+        </div>
+        <div class="w-full flex flex-col items-center justify-end h-full z-10 group">
+            <div class="w-full max-w-[30px] bg-dental-teal rounded-t-md relative flex items-end justify-center group-hover:bg-dental-teal/80 transition-colors" style="height: 80%"></div>
+            <span class="text-[10px] text-gray-400 font-bold mt-2">Jun</span>
+        </div>
+    </div>
+</div>
+
+                        <!-- Breakdown table -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Performance by Treatment</h3>
+                        <div class="hide-scroll overflow-x-auto">
+                            <table class="admin-table min-w-[560px]">
+                                <thead>
+                                    <tr>
+                                        <th>Treatment</th>
+                                        <th>Cases</th>
+                                        <th>Revenue</th>
+                                        <th>Avg. Duration</th>
+                                        <th>Completion Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">Invisalign</td>
+                                        <td>64</td>
+                                        <td class="font-bold text-dental-teal">$307,200</td>
+                                        <td>12 months</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">96%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">Traditional Braces</td>
+                                        <td>38</td>
+                                        <td class="font-bold text-dental-teal">$148,200</td>
+                                        <td>18 months</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">94%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">Teeth Whitening</td>
+                                        <td>22</td>
+                                        <td class="font-bold text-dental-teal">$14,300</td>
+                                        <td>1 week</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">98%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">Dental Implants</td>
+                                        <td>16</td>
+                                        <td class="font-bold text-dental-teal">$51,200</td>
+                                        <td>4 months</td>
+                                        <td><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">88%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold text-dental-blue dark:text-white">General Dentistry</td>
+                                        <td>186</td>
+                                        <td class="font-bold text-dental-teal">$33,480</td>
+                                        <td>1 visit</td>
+                                        <td><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">99%</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ SETTINGS ============ -->
+                <div id="settings" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-cog text-dental-teal mr-2"></i>Clinic Settings
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Configure clinic information, hours, notifications, and preferences.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Clinic Name</label>
+                                <input type="text" value="OrthoSmile Dental &mdash; Premium Oral Care Center" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Contact Email</label>
+                                <input type="email" value="admin@OrthoSmile.com" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Phone</label>
+                                <input type="tel" value="(888) 555-0123" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Address</label>
+                                <input type="text" value="123 Dental Ave, Los Angeles, CA 90012" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Opening Time</label>
+                                <input type="time" value="08:00" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Closing Time</label>
+                                <input type="time" value="18:00" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                        </div>
+
+                        <div class="mt-6 space-y-3">
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Auto-confirm Appointments</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Automatically confirm new bookings</p>
+                                </div>
+                                <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                            </div>
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Email Reminders</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Send 48-hour reminders to patients</p>
+                                </div>
+                                <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                            </div>
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">SMS Notifications</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Send SMS updates to patients</p>
+                                </div>
+                                <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                            </div>
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Maintenance Mode</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Disable patient portal access temporarily</p>
+                                </div>
+                                <label class="switch"><input type="checkbox"><span class="switch-slider"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                            <button class="btn-teal px-6 py-3 rounded-full text-sm" id="saveSettings"><i class="fas fa-save mr-1"></i> Save Settings</button>
+                            <button class="btn-outline-teal px-6 py-3 rounded-full text-sm"><i class="fas fa-database mr-1"></i> Backup Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="text-center text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-gray-800 pt-6 pb-4">
+                    <p>&copy; 2026 OrthoSmile Dental &mdash; Admin Console &middot; Internal Use Only</p>
+                    <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2">
+                        <a href="#" class="hover:text-dental-teal transition">System Logs</a>
+                        <a href="#" class="hover:text-dental-teal transition">HIPAA Compliance</a>
+                        <a href="#" class="hover:text-dental-teal transition">Audit Trail</a>
+                    </div>
+                </footer>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ============ TOAST ============ -->
+    <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] pointer-events-none w-auto max-w-[90vw]"></div>
+
+    <!-- ============ NEW APPOINTMENT MODAL ============ -->
+    <div id="apptModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+        <div class="bg-white dark:bg-dental-dark rounded-3xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto hide-scroll">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center sticky top-0 bg-white dark:bg-dental-dark z-10">
+                <h3 class="font-serif text-xl font-bold text-dental-blue dark:text-white">New Appointment</h3>
+                <button id="closeApptModal" class="p-2 rounded-lg hover:bg-dental-light dark:hover:bg-white/5">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Patient</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                        <option>Jane Doe &middot; #OR-8421</option>
+                        <option>Michael Chen &middot; #OR-8420</option>
+                        <option>Sofia Garcia &middot; #OR-8419</option>
+                        <option>David Kim &middot; #OR-8418</option>
+                        <option>+ Register new patient</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Treatment</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                        <option>Invisalign Adjustment</option>
+                        <option>Monthly Check-in</option>
+                        <option>Braces Adjustment</option>
+                        <option>Cleaning</option>
+                        <option>Whitening Session</option>
+                        <option>Implant Consultation</option>
+                        <option>Emergency Visit</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Dentist</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                        <option>Dr. Sarah Malik</option>
+                        <option>Dr. Ryan Patel</option>
+                        <option>Dr. Emily Chen</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Date</label>
+                        <input type="date" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Time</label>
+                        <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            <option>9:00 AM</option>
+                            <option>10:30 AM</option>
+                            <option>12:00 PM</option>
+                            <option>2:00 PM</option>
+                            <option>3:30 PM</option>
+                            <option>5:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button id="confirmAppt" class="flex-1 btn-teal py-3 rounded-xl text-sm font-bold"><i class="fas fa-check mr-1"></i> Schedule Appointment</button>
+                    <button id="cancelAppt" class="flex-1 btn-outline-teal py-3 rounded-xl text-sm font-bold">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const html = document.documentElement;
+
+        // ===== THEME =====
+        const themeBtn = document.getElementById('theme-toggle');
+        function applyTheme(theme) {
+            if (theme === 'dark') html.classList.add('dark');
+            else html.classList.remove('dark');
+            document.querySelectorAll('.light-icon').forEach(i => i.classList.toggle('hidden', theme === 'dark'));
+            document.querySelectorAll('.dark-icon').forEach(i => i.classList.toggle('hidden', theme === 'light'));
+            localStorage.setItem('theme', theme);
+            updateCharts();
+        }
+        applyTheme(localStorage.getItem('theme') || 'light');
+        themeBtn?.addEventListener('click', () => applyTheme(html.classList.contains('dark') ? 'light' : 'dark'));
+
+        // ===== RTL =====
+        if (localStorage.getItem('dir') === 'rtl') html.setAttribute('dir', 'rtl');
+        document.getElementById('rtl-toggle')?.addEventListener('click', () => {
+            const isRtl = html.getAttribute('dir') === 'rtl';
+            if (isRtl) { html.removeAttribute('dir'); localStorage.setItem('dir', 'ltr'); }
+            else { html.setAttribute('dir', 'rtl'); localStorage.setItem('dir', 'rtl'); }
+        });
+
+        // ===== MOBILE MENU =====
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        const openMenu = () => { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; };
+        const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; };
+        document.getElementById('mobile-menu-open')?.addEventListener('click', openMenu);
+        document.getElementById('mobile-menu-close')?.addEventListener('click', closeMenu);
+        overlay?.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+        // ===== SECTION NAV =====
+        const sections = ['overview','patients','appointments','dentists','treatments','payments','reports','settings'];
+        const links = document.querySelectorAll('.sidebar-link[data-section]');
+
+        window.activateSection = function(id) {
+            sections.forEach(s => document.getElementById(s)?.classList.add('hidden'));
+            document.getElementById(id)?.classList.remove('hidden');
+            links.forEach(l => {
+                l.classList.remove('active');
+                if (l.dataset.section === id) l.classList.add('active');
+            });
+            if (window.innerWidth < 1024) closeMenu();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (id === 'reports') setTimeout(() => reportChart?.resize(), 80);
+        };
+        links.forEach(l => l.addEventListener('click', e => { e.preventDefault(); activateSection(l.dataset.section); }));
+        document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => activateSection(btn.dataset.nav)));
+
+        // ===== TOAST =====
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            let bg = '#1A5276', icon = '<i class="fas fa-info-circle"></i>';
+            if (type === 'success') { bg = '#10B981'; icon = '<i class="fas fa-check-circle"></i>'; }
+            if (type === 'warning') { bg = '#F59E0B'; icon = '<i class="fas fa-exclamation-triangle"></i>'; }
+            if (type === 'error') { bg = '#EF4444'; icon = '<i class="fas fa-times-circle"></i>'; }
+            t.className = 'mb-2 px-5 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium flex items-center gap-2 pointer-events-auto text-white max-w-full';
+            t.style.backgroundColor = bg;
+            t.style.animation = 'toastFade 3s ease forwards';
+            t.innerHTML = `${icon} <span class="break-words">${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3100);
+        }
+        const styleTag = document.createElement('style');
+        styleTag.textContent = `@keyframes toastFade { 0%{opacity:0;transform:translateX(-50%) translateY(20px);} 15%{opacity:1;transform:translateX(-50%) translateY(0);} 85%{opacity:1;transform:translateX(-50%) translateY(0);} 100%{opacity:0;transform:translateX(-50%) translateY(-10px);} }`;
+        document.head.appendChild(styleTag);
+
+        // ===== LOGOUT =====
+        document.getElementById('logoutBtn')?.addEventListener('click', e => {
+            e.preventDefault();
+            localStorage.clear(); sessionStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // ===== CHART THEME HELPER =====
+        function getChartColors() {
+            const isDark = html.classList.contains('dark');
+            return {
+                grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                text: isDark ? '#94A3B8' : '#64748B'
+            };
+        }
+        function updateCharts() {
+            const c = getChartColors();
+            [window.revenueChart, window.treatmentChart, window.reportChart].forEach(ch => {
+                if (!ch) return;
+                if (ch.options.scales) {
+                    Object.values(ch.options.scales).forEach(s => {
+                        if (s.grid) s.grid.color = c.grid;
+                        if (s.ticks) s.ticks.color = c.text;
+                    });
+                }
+                if (ch.options.plugins?.legend?.labels) ch.options.plugins.legend.labels.color = c.text;
+                ch.update('none');
+            });
+        }
+
+        // ===== CHARTS =====
+        const colors = getChartColors();
+
+        const revCtx = document.getElementById('revenueChart')?.getContext('2d');
+        if (revCtx) {
+            window.revenueChart = new Chart(revCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+                    datasets: [
+                        {
+                            label: 'Revenue ($K)',
+                            data: [28, 34, 31, 36, 38, 42.8],
+                            borderColor: '#1ABC9C',
+                            backgroundColor: 'rgba(26,188,156,0.12)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Appointments',
+                            data: [310, 340, 322, 358, 390, 412],
+                            borderColor: '#1A5276',
+                            backgroundColor: 'rgba(26,82,118,0.08)',
+                            tension: 0.35,
+                            fill: false,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: colors.text, boxWidth: 12, padding: 12, font: { size: 11 } } }
+                    },
+                    scales: {
+                        x: { grid: { color: colors.grid }, ticks: { color: colors.text, font: { size: 10 } } },
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text, font: { size: 10 }, callback: v => '$' + v + 'K' }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { color: colors.text, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        const treatCtx = document.getElementById('treatmentChart')?.getContext('2d');
+        if (treatCtx) {
+            window.treatmentChart = new Chart(treatCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Invisalign', 'Braces', 'Whitening', 'Implants', 'General'],
+                    datasets: [{
+                        data: [34, 20, 12, 8, 26],
+                        backgroundColor: ['#1ABC9C', '#1A5276', '#F59E0B', '#EF4444', '#8B5CF6'],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: colors.text, boxWidth: 12, padding: 10, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        const repCtx = document.getElementById('reportChart')?.getContext('2d');
+        if (repCtx) {
+            window.reportChart = new Chart(repCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'New Patients',
+                            data: [18, 22, 20, 24, 28, 26],
+                            backgroundColor: '#1ABC9C',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Returning Patients',
+                            data: [180, 195, 210, 220, 236, 245],
+                            backgroundColor: '#1A5276',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: colors.text, boxWidth: 12, padding: 12, font: { size: 11 } } }
+                    },
+                    scales: {
+                        x: { grid: { color: colors.grid }, ticks: { color: colors.text, font: { size: 10 } } },
+                        y: { beginAtZero: true, grid: { color: colors.grid }, ticks: { color: colors.text, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // ===== PATIENT SEARCH & FILTER =====
+        const searchInput = document.getElementById('patientSearch');
+        const filterSelect = document.getElementById('patientFilter');
+        function filterPatients() {
+            const q = (searchInput?.value || '').toLowerCase();
+            const filter = filterSelect?.value || '';
+            document.querySelectorAll('#patientsTable tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const treat = row.getAttribute('data-treatment') || '';
+                const matchSearch = !q || text.includes(q);
+                const matchFilter = !filter || treat === filter;
+                row.style.display = (matchSearch && matchFilter) ? '' : 'none';
+            });
+        }
+        searchInput?.addEventListener('input', filterPatients);
+        filterSelect?.addEventListener('change', filterPatients);
+
+        // ===== APPOINTMENT TABS (visual only) =====
+        document.querySelectorAll('.appt-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.appt-tab').forEach(t => {
+                    t.classList.remove('btn-teal');
+                    t.classList.add('btn-outline-gray');
+                });
+                tab.classList.remove('btn-outline-gray');
+                tab.classList.add('btn-teal');
+                showToast('Filter applied: ' + tab.textContent.trim(), 'info');
+            });
+        });
+
+        // ===== APPOINTMENT MODAL =====
+        const apptModal = document.getElementById('apptModal');
+        const openApptModal = () => { apptModal.classList.remove('hidden'); apptModal.classList.add('flex'); document.body.style.overflow = 'hidden'; };
+        const closeApptModal = () => { apptModal.classList.add('hidden'); apptModal.classList.remove('flex'); document.body.style.overflow = ''; };
+        document.getElementById('newApptBtn')?.addEventListener('click', openApptModal);
+        document.getElementById('closeApptModal')?.addEventListener('click', closeApptModal);
+        document.getElementById('cancelAppt')?.addEventListener('click', closeApptModal);
+        document.getElementById('confirmAppt')?.addEventListener('click', () => {
+            closeApptModal();
+            showToast('Appointment scheduled and confirmation sent to patient.', 'success');
+        });
+        apptModal?.addEventListener('click', e => { if (e.target === apptModal) closeApptModal(); });
+
+        // ===== QUICK ADD PATIENT =====
+        document.getElementById('quickAddPatient')?.addEventListener('click', () => {
+            activateSection('patients');
+            showToast('Opening patient registration form…', 'info');
+        });
+
+        // ===== SAVE SETTINGS =====
+        document.getElementById('saveSettings')?.addEventListener('click', () => {
+            showToast('Clinic settings saved successfully.', 'success');
+        });
+
+        // ===== RESIZE =====
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ===== WELCOME TOAST =====
+        setTimeout(() => showToast('Welcome back, Dr. Patel. 18 appointments today.', 'info'), 500);
+    });
+    </script>
+</body>
+</html>

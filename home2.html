@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
+    <title>OrthoSmile Orthodontics | Premium Orthodontic Center</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%B7%3C/text%3E%3C/svg%3E">
+    <script src="tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'dental-blue': '#1A5276',
+                        'dental-teal': '#1ABC9C',
+                        'dental-light': '#F0F8FF',
+                        'dental-dark': '#0B1E26',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        [dir="rtl"] .floating { animation-direction: reverse; }
+
+        /* ===== ROUNDED NAVBAR ===== */
+        .navbar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-wrapper.scrolled {
+            background: rgba(26, 82, 118, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .dark .navbar-wrapper {
+            background: rgba(11, 30, 38, 0.95);
+        }
+        .dark .navbar-wrapper.scrolled {
+            background: rgba(11, 30, 38, 1);
+        }
+
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+            padding: 0 24px;
+            transition: all 0.3s ease;
+        }
+        .navbar-wrapper.scrolled .navbar-inner {
+            height: 64px;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            text-decoration: none;
+            padding: 0 4px;
+        }
+        .logo-icon {
+            background: #1A5276;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(26, 188, 156, 0.3);
+            flex-shrink: 0;
+        }
+        .logo-icon i { color: #1ABC9C; font-size: 1.1rem; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; color: #ffffff; line-height: 1.1; }
+        .logo-text .highlight { color: #1ABC9C; }
+        .logo-sub { font-size: 0.4rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); font-weight: 600; display: block; margin-top: -1px; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
+            justify-content: center;
+        }
+        .nav-link {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dark .nav-link { color: rgba(255, 255, 255, 0.7); }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.10); color: #ffffff; }
+        .nav-link.active { background: rgba(26, 188, 156, 0.20); color: #1ABC9C; font-weight: 600; }
+
+        .dropdown-wrapper { position: relative; }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 170px;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 6px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(8px);
+            transition: all 0.25s ease;
+            z-index: 1000;
+            border: 1px solid rgba(26, 188, 156, 0.15);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+        }
+        .dark .dropdown-menu { background: rgba(11, 30, 38, 0.95); }
+        .dropdown-wrapper:hover .dropdown-menu,
+        .dropdown-wrapper.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 18px;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 2px 6px;
+            text-decoration: none;
+        }
+        .dropdown-item:hover { background: rgba(26, 188, 156, 0.15); color: #1ABC9C; }
+        .dropdown-item.active { background: rgba(26, 188, 156, 0.10); color: #1ABC9C; font-weight: 600; }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .btn-rounded {
+            padding: 0 16px;
+            height: 34px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-rounded.login {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.20);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .btn-rounded.login:hover { background: rgba(255, 255, 255, 0.10); border-color: #1ABC9C; color: #1ABC9C; }
+        .btn-rounded.signup {
+            background: #1ABC9C;
+            color: #1A5276;
+            border: 1.5px solid #1ABC9C;
+        }
+        .btn-rounded.signup:hover {
+            background: #16A085;
+            border-color: #16A085;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.3);
+        }
+        .btn-icon-rounded {
+            width: 34px; height: 34px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.8);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.85rem;
+        }
+        .dark .btn-icon-rounded { background: rgba(255, 255, 255, 0.04); color: rgba(255, 255, 255, 0.6); }
+        .btn-icon-rounded:hover { background: #1ABC9C; color: #1A5276; border-color: #1ABC9C; }
+
+        .mobile-toggle {
+            display: none;
+            width: 36px; height: 36px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .mobile-toggle:hover { background: rgba(26, 188, 156, 0.20); border-color: #1ABC9C; }
+
+        .mobile-menu {
+            display: none;
+            background: rgba(26, 82, 118, 0.96);
+            backdrop-filter: blur(16px);
+            border-radius: 0 0 24px 24px;
+            border: 1px solid rgba(26, 188, 156, 0.10);
+            border-top: none;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s ease;
+            margin: 0 4px;
+        }
+        .dark .mobile-menu { background: rgba(11, 30, 38, 0.96); }
+        .mobile-menu.open { max-height: 600px; }
+        .mobile-menu-item {
+            display: block;
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .mobile-menu-item.active { color: #1ABC9C; font-weight: 600; background: rgba(26, 188, 156, 0.06); border-left: 3px solid #1ABC9C; }
+        .mobile-dropdown { background: rgba(255, 255, 255, 0.04); }
+        .mobile-dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0, 0, 0, 0.10); }
+        .mobile-dropdown-content.show { max-height: 200px; }
+        .mobile-dropdown-item { display: block; padding: 8px 20px 8px 36px; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: all 0.2s; }
+        .mobile-dropdown-item:hover { color: #1ABC9C; }
+        .mobile-dropdown-item.active { color: #1ABC9C; font-weight: 600; }
+        .mobile-actions { padding: 12px 16px; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+        @media (min-width: 1200px) { .mobile-toggle { display: none !important; } .mobile-menu { display: none !important; } }
+        @media (max-width: 1199px) {
+            .mobile-toggle { display: flex !important; }
+            .mobile-menu { display: block !important; }
+            .nav-links .nav-link:not(.keep) { display: none; }
+            .nav-links .dropdown-wrapper:not(.keep) { display: none; }
+            .desktop-action { display: none !important; }
+            .nav-links { justify-content: flex-end; gap: 4px; }
+            .navbar-inner { height: 56px; padding: 4px 10px; }
+        }
+        @media (max-width: 768px) {
+            .navbar-wrapper { padding: 8px 12px; }
+            .navbar-inner { height: 50px; border-radius: 40px; padding: 3px 8px; }
+            .logo-icon { width: 30px; height: 30px; border-radius: 10px; }
+            .logo-icon i { font-size: 0.9rem; }
+            .logo-text { font-size: 0.9rem; }
+            .logo-sub { font-size: 0.35rem; }
+        }
+        @media (max-width: 480px) {
+            .navbar-wrapper { padding: 6px 8px; }
+            .navbar-inner { height: 44px; border-radius: 30px; padding: 2px 6px; }
+            .logo-icon { width: 26px; height: 26px; border-radius: 8px; }
+            .logo-icon i { font-size: 0.75rem; }
+            .logo-text { font-size: 0.8rem; }
+            .logo-sub { display: none; }
+            .btn-rounded { font-size: 0.6rem; padding: 3px 10px; gap: 3px; }
+            .btn-rounded i { display: none; }
+            .nav-actions .btn-rounded.login { display: none; }
+        }
+
+        /* ===== OTHER COMPONENTS ===== */
+        .btn-primary {
+            background: #1ABC9C;
+            color: #1A5276;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-primary:hover { background: #1A5276; color: #1ABC9C; transform: scale(1.03); }
+        .btn-outline {
+            border: 2px solid #1ABC9C;
+            background: transparent;
+            color: #1ABC9C;
+            padding: 0.75rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline:hover { background: #1ABC9C; color: #1A5276; }
+
+        .service-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+            border: 1px solid #E8E8E8;
+            overflow: hidden;
+        }
+        .dark .service-card {
+            background: #1A2A3A;
+            border-color: #2A3A4A;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: #1ABC9C;
+            box-shadow: 0 25px 40px -15px rgba(26, 188, 156, 0.25);
+        }
+
+        .testimonial-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+            border: 1px solid #E8E8E8;
+        }
+        .dark .testimonial-card {
+            background: #1A2A3A;
+            border-color: #2A3A4A;
+        }
+        .testimonial-card:hover {
+            border-color: #1ABC9C;
+            box-shadow: 0 20px 40px -12px rgba(26, 188, 156, 0.15);
+        }
+
+        .social-icon {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.06);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            transition: all 0.3s;
+            color: #1ABC9C;
+            border: 1px solid rgba(26, 188, 156, 0.2);
+            text-decoration: none;
+        }
+        .dark .social-icon { background: rgba(255,255,255,0.03); }
+        .social-icon:hover { background: #1ABC9C !important; color: #1A5276; transform: translateY(-3px); }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(26, 188, 156, 0.15);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            border-color: #1ABC9C;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(26, 188, 156, 0.15);
+        }
+
+        @media (max-width: 430px) {
+            .hero-title { font-size: 2.2rem !important; }
+            .section-title { font-size: 1.8rem !important; }
+            .service-card { border-radius: 18px; padding: 1.2rem !important; }
+            .btn-primary, .btn-outline { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
+        }
+        @media (max-width: 360px) {
+            .hero-title { font-size: 1.8rem !important; }
+            .section-title { font-size: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-dental-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+
+    <!-- ===== ROUNDED NAVBAR ===== -->
+    <nav class="navbar-wrapper" id="navbarWrapper">
+        <div class="navbar-inner">
+            <a href="index.html" class="logo-wrapper">
+                <div class="logo-icon">
+                    <i class="fas fa-smile-beam"></i></div>
+                <div><span class="logo-text">Ortho<span class="highlight">Smile</span></span><span class="logo-sub">BRACES CLINIC</span></div>
+            </a>
+            <div class="nav-links">
+                <div class="dropdown-wrapper keep">
+                    <span class="nav-link active">Home <i class="fas fa-chevron-down text-[8px] ml-0.5 opacity-60"></i></span>
+                    <div class="dropdown-menu">
+                        <a href="index.html" class="dropdown-item">Home 1</a>
+                        <a href="home2.html" class="dropdown-item active">Home 2</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="dentists.html" class="nav-link">Dentists</a>
+                <a href="treatments.html" class="nav-link">Treatments</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="dropdown-wrapper keep">
+                    <span class="nav-link">Dashboard <i class="fas fa-chevron-down text-[8px] ml-0.5 opacity-60"></i></span>
+                    <div class="dropdown-menu">
+                        <a href="client.html" class="dropdown-item">Client</a>
+                        <a href="admin.html" class="dropdown-item">Admin</a>
+                    </div>
+                </div>
+
+                
+                </div>
+            <div class="nav-actions">
+                <!-- RTL Toggle -->
+                <button id="rtl-toggle" class="btn-icon-rounded desktop-action" title="RTL">&#8644;</button>
+
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="btn-icon-rounded desktop-action" title="Theme">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun hidden"></i>
+                </button>
+
+                <!-- Book CTA -->
+                <a href="signup.html" class="btn-primary desktop-action" style="padding: 10px 24px; font-size: 0.9rem;"><i class="fas fa-user-plus"></i> Sign Up</a>
+
+                <!-- Mobile Toggle -->
+                <button id="mobile-toggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="mobile-menu">
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-btn flex justify-between items-center w-full mobile-menu-item active">
+                    Home <i class="fas fa-chevron-down text-xs opacity-60"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a href="index.html" class="mobile-dropdown-item">Home 1</a>
+                    <a href="home2.html" class="mobile-dropdown-item active">Home 2</a>
+                </div>
+            </div>
+            <a href="about.html" class="mobile-menu-item">About</a>
+            <a href="services.html" class="mobile-menu-item">Services</a>
+            <a href="dentists.html" class="mobile-menu-item">Dentists</a>
+            <a href="treatments.html" class="mobile-menu-item">Treatments</a>
+            <a href="pricing.html" class="mobile-menu-item">Pricing</a>
+            <a href="contact.html" class="mobile-menu-item">Contact</a>
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-btn flex justify-between items-center w-full mobile-menu-item">
+                    Dashboard <i class="fas fa-chevron-down text-xs opacity-60"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a href="client.html" class="mobile-dropdown-item">Client</a>
+                    <a href="admin.html" class="mobile-dropdown-item">Admin</a>
+                </div>
+            </div>
+            <div class="mobile-actions">
+                <button id="theme-toggle-mobile" class="btn-icon-rounded"><i class="fas fa-moon"></i><i class="fas fa-sun hidden"></i></button>
+                <button id="rtl-toggle-mobile" class="btn-icon-rounded">&#8644;</button>
+                <a href="signup.html" class="btn-primary w-full text-center mt-2 justify-center" style="padding: 12px 24px;"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SECTION 1: HERO with Video/Image Overlay ===== -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark">
+        <div class="absolute inset-0 z-0">
+            <div class="w-full h-full bg-[url('assests/friendly_reception_bg.jpg')] bg-cover bg-center opacity-15"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dental-blue/30 to-dental-dark/90"></div>
+        </div>
+        <div class="absolute inset-0 pointer-events-none opacity-20">
+            <div class="absolute top-1/4 left-10 floating text-dental-teal"><i class="fas fa-smile-beam fa-4x"></i></div>
+            <div class="absolute bottom-1/4 right-10 floating text-dental-teal" style="animation-delay: 2s;"><i class="fas fa-heart fa-3x"></i></div>
+            <div class="absolute top-1/3 right-1/4 floating text-dental-teal" style="animation-delay: 4s;"><i class="fas fa-smile fa-3x"></i></div>
+        </div>
+        <div class="relative z-10 text-center px-6 max-w-5xl">
+            <div class="inline-flex items-center gap-2 bg-dental-teal/20 backdrop-blur-sm px-5 py-2 rounded-full mb-6 border border-dental-teal/30">
+                <span class="w-2 h-2 bg-dental-teal rounded-full animate-pulse"></span>
+                <span class="text-dental-teal text-xs uppercase tracking-widest font-bold">Premium Orthodontic Center</span>
+            </div>
+            <h1 class="hero-title font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-[1.05] mb-6 font-medium">
+                Perfect <span class="italic text-dental-teal">Smiles</span> <br>With Expert Braces
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl lg:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
+                Specializing in traditional braces, clear aligners, and comprehensive orthodontic care for children, teens, and adults.
+            </p>
+            <div class="flex flex-wrap gap-5 justify-center">
+                <a href="appointment.html" class="btn-primary shadow-lg text-base md:text-lg"><i class="fas fa-calendar-check"></i> Book Appointment</a>
+                <a href="services.html" class="btn-outline border-white text-white hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-info-circle"></i> Explore Services</a>
+            </div>
+            <div class="mt-12 flex flex-wrap justify-center gap-6 md:gap-10 text-sm md:text-base">
+                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 100% Satisfaction</span>
+                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 15+ Specialists</span>
+                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 10,000+ Smiles</span>
+                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 98% Success Rate</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: WHY CHOOSE US (Features Grid) ===== -->
+    <!-- ===== SECTION: WHY CHOOSE US - TESTIMONIAL STYLE ===== -->
+<section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Why OrthoSmile</span>
+            <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">What <span class="italic text-dental-teal">Sets</span> Us Apart</h2>
+            <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4">Hear from our patients why they trust us with their smiles.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+            <!-- Feature 1 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user-md text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Expert Specialists</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The team at OrthoSmile is incredible. Every specialist I've seen has been knowledgeable, gentle, and truly caring."</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">JM</div>
+                    <div>
+                        <p class="text-xs font-semibold">Jessica Martinez</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Braces Patient</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">15+ Specialists</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">100+ Certifications</span>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-microscope text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Advanced Technology</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The technology at OrthoSmile is amazing. My crown was done in one visit thanks to their 3D printing system."</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">RT</div>
+                    <div>
+                        <p class="text-xs font-semibold">Robert Thompson</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Invisalign Patient</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">10+ Tech Systems</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">3D Digital Scans</span>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-smile text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Comfort First</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"I was nervous about my orthodontic work, but the team made me feel so comfortable. I actually enjoyed my visit!"</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">AL</div>
+                    <div>
+                        <p class="text-xs font-semibold">Amanda Lee</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Teen Patient</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">Colorful Braces</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">95% Less Anxiety</span>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-clock text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Flexible Scheduling</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"I love that OrthoSmile offers evening appointments. I can see the dentist after work without taking time off."</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">MC</div>
+                    <div>
+                        <p class="text-xs font-semibold">Michael Chen</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Adult Braces</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">7 Days Available</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">6 AM - 9 PM</span>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-hand-holding-usd text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Affordable Care</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The pricing is transparent and they worked with my insurance. No surprises, just great care."</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">SR</div>
+                    <div>
+                        <p class="text-xs font-semibold">Sarah Reynolds</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Insurance Patient</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">0% Financing</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">Insurance Accepted</span>
+                </div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-star text-xl text-dental-teal"></i>
+                    </div>
+                    <div>
+                        <div class="flex gap-1 text-dental-teal text-xs">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="font-bold text-sm">Proven Results</h4>
+                    </div>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"My smile has completely transformed. I get compliments everywhere I go. Thank you, OrthoSmile!"</p>
+                <div class="mt-auto pt-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">JW</div>
+                    <div>
+                        <p class="text-xs font-semibold">James Wilson</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Smile Makeover</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">4.9/5 Rating</span>
+                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">10,000+ Smiles</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- ===== SECTION 3: INTERACTIVE STATS + CTA ===== -->
+    <section class="py-20 md:py-28 px-6 bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div>
+                    <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Our Impact</span>
+                    <h2 class="section-title font-serif text-4xl md:text-5xl font-bold mt-2 leading-tight">By the <span class="italic text-dental-teal">Numbers</span></h2>
+                    <p class="text-gray-300 text-lg mt-4 mb-8 leading-relaxed">Every statistic represents a patient whose smile we've transformed. We're proud of the lives we've touched and the confidence we've restored.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-5 lg:p-6 border border-white/10 flex flex-col justify-center">
+                            <div class="text-3xl md:text-4xl xl:text-5xl font-bold text-dental-teal">10,000+</div>
+                            <div class="text-xs sm:text-sm text-gray-300 mt-1">Happy Patients</div>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-5 lg:p-6 border border-white/10 flex flex-col justify-center">
+                            <div class="text-3xl md:text-4xl xl:text-5xl font-bold text-dental-teal">98%</div>
+                            <div class="text-xs sm:text-sm text-gray-300 mt-1">Satisfaction Rate</div>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-5 lg:p-6 border border-white/10 flex flex-col justify-center">
+                            <div class="text-3xl md:text-4xl xl:text-5xl font-bold text-dental-teal">15+</div>
+                            <div class="text-xs sm:text-sm text-gray-300 mt-1">Expert Specialists</div>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-5 lg:p-6 border border-white/10 flex flex-col justify-center">
+                            <div class="text-3xl md:text-4xl xl:text-5xl font-bold text-dental-teal">12</div>
+                            <div class="text-xs sm:text-sm text-gray-300 mt-1">Years of Excellence</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-dental-teal/20 rounded-xl flex items-center justify-center text-dental-teal text-xl flex-shrink-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Free Orthodontic Consults</h4>
+                                <p class="text-gray-300 text-sm mt-1">Emergency and routine appointments available with flexible scheduling options.</p>
+                                <a href="appointment.html" class="inline-block mt-3 text-dental-teal font-semibold hover:underline">Book Now &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-dental-teal/20 rounded-xl flex items-center justify-center text-dental-teal text-xl flex-shrink-0">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Flexible Payment Plans</h4>
+                                <p class="text-gray-300 text-sm mt-1">0% interest financing, insurance acceptance, and membership discounts available.</p>
+                                <a href="pricing.html" class="inline-block mt-3 text-dental-teal font-semibold hover:underline">View Options &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4: OUR PROCESS ===== -->
+    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-dark/80 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">How It Works</span>
+                <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">Your Smile <span class="italic text-dental-teal">Journey</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+                <!-- Decorative Connecting Line (Desktop Only) -->
+                <div class="hidden lg:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-dental-teal/20 -z-10"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative text-center group">
+                    <div class="w-24 h-24 mx-auto bg-white dark:bg-dental-dark rounded-full border-4 border-dental-light dark:border-gray-800 shadow-xl flex items-center justify-center mb-6 group-hover:border-dental-teal transition-colors duration-300">
+                        <span class="text-3xl font-bold text-dental-teal">01</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Book Appointment</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Schedule a time that works best for you through our online portal or by giving us a call.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative text-center group">
+                    <div class="w-24 h-24 mx-auto bg-white dark:bg-dental-dark rounded-full border-4 border-dental-light dark:border-gray-800 shadow-xl flex items-center justify-center mb-6 group-hover:border-dental-teal transition-colors duration-300">
+                        <span class="text-3xl font-bold text-dental-teal">02</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Comprehensive Exam</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Our specialists will evaluate your oral health using state-of-the-art diagnostic technology.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative text-center group">
+                    <div class="w-24 h-24 mx-auto bg-white dark:bg-dental-dark rounded-full border-4 border-dental-light dark:border-gray-800 shadow-xl flex items-center justify-center mb-6 group-hover:border-dental-teal transition-colors duration-300">
+                        <span class="text-3xl font-bold text-dental-teal">03</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Treatment Plan</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">We'll craft a customized care plan tailored to your specific goals and orthodontic needs.</p>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="relative text-center group">
+                    <div class="w-24 h-24 mx-auto bg-white dark:bg-dental-dark rounded-full border-4 border-dental-light dark:border-gray-800 shadow-xl flex items-center justify-center mb-6 group-hover:border-dental-teal transition-colors duration-300">
+                        <span class="text-3xl font-bold text-dental-teal">04</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Healthy Smile</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Enjoy your beautiful, confident smile and receive guidance on long-term maintenance.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="appointment.html" class="btn-primary"><i class="fas fa-calendar-check"></i> Start Your Journey</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5: SERVICES SHOWCASE (Image Gallery Style) ===== -->
+    <section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Our Services</span><br><h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2 inline-block">Comprehensive <span class="italic text-dental-teal">Care</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4">From routine checkups to advanced procedures, we offer a full spectrum of dental services.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                <div class="group relative overflow-hidden rounded-3xl shadow-xl">
+                    <img src="assests/home2.jpg" alt="Traditional Braces" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dental-dark/80 via-transparent to-transparent flex items-end p-6">
+                        <div>
+                            <h4 class="text-white text-xl font-bold">Traditional Braces</h4>
+                            <p class="text-gray-300 text-sm">Exams &middot; Cleanings &middot; Prevention</p>
+                            <a href="services.html" class="inline-block mt-2 text-dental-teal hover:text-white transition-colors duration-300 text-sm font-semibold">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl shadow-xl">
+                    <img src="assests/home22.jpg" alt="Clear Aligners" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dental-dark/80 via-transparent to-transparent flex items-end p-6">
+                        <div>
+                            <h4 class="text-white text-xl font-bold">Clear Aligners</h4>
+                            <p class="text-gray-300 text-sm">Veneers &middot; Whitening &middot; Smile Design</p>
+                            <a href="services.html" class="inline-block mt-2 text-dental-teal hover:text-white transition-colors duration-300 text-sm font-semibold">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl shadow-xl">
+                    <img src="assests/home23.jpg" alt="Orthodontics" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dental-dark/80 via-transparent to-transparent flex items-end p-6">
+                        <div>
+                            <h4 class="text-white text-xl font-bold">Early Orthodontics</h4>
+                            <p class="text-gray-300 text-sm">Braces &middot; Invisalign &middot; Alignment</p>
+                            <a href="services.html" class="inline-block mt-2 text-dental-teal hover:text-white transition-colors duration-300 text-sm font-semibold">Learn More &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-10">
+                <a href="services.html" class="btn-primary"><i class="fas fa-list"></i> View All Services</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6: CTA with Gradient Background ===== -->
+    <section class="py-20 md:py-28 px-6 bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-dental-teal rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative z-10 max-w-5xl mx-auto text-center">
+            <i class="fas fa-calendar-check text-5xl text-dental-teal mb-6"></i>
+            <h2 class="font-serif text-4xl md:text-6xl font-bold mb-4">Ready to <span class="italic text-dental-teal">Transform</span> Your Smile?</h2>
+            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">Join thousands of happy patients who trusted us with their smiles. Book your appointment today and experience the OrthoSmile difference.</p>
+            <div class="flex flex-wrap gap-5 justify-center mb-8">
+                <a href="appointment.html" class="btn-primary bg-dental-teal text-dental-blue hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-paper-plane"></i> Book Now</a>
+                <a href="tel:8885550123" class="btn-outline border-white text-white hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-phone"></i> Call (888) 555-0123</a>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto text-sm">
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <i class="fas fa-check-circle text-dental-teal text-xl block mb-2"></i>
+                    <span class="text-white/80">Insurance Accepted</span>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <i class="fas fa-check-circle text-dental-teal text-xl block mb-2"></i>
+                    <span class="text-white/80">Flexible Hours</span>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <i class="fas fa-check-circle text-dental-teal text-xl block mb-2"></i>
+                    <span class="text-white/80">Free Orthodontic Consults</span>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <i class="fas fa-check-circle text-dental-teal text-xl block mb-2"></i>
+                    <span class="text-white/80">Payment Plans</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="pt-16 pb-8 bg-black text-white">
+        <div class="max-w-[1400px] mx-auto px-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div class="text-center md:text-start">
+                    <a href="index.html" class="logo-wrapper justify-center md:justify-start mb-6 group">
+                        <div class="logo-icon"><i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i></div>
+                        <div class="text-left"><span class="logo-text">Ortho<span class="highlight">Smile</span></span><span class="logo-sub">BRACES CLINIC</span></div>
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Your trusted partner for comprehensive orthodontic care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
+                    <div class="flex gap-3 justify-center md:justify-start">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Quick Links</h3><ul class="space-y-2 text-gray-400"><li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li><li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li><li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li></ul></div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Treatments</h3><ul class="space-y-2 text-gray-400"><li><a href="#" class="hover:text-dental-teal transition block">Traditional Braces</a></li><li><a href="#" class="hover:text-dental-teal transition block">Clear Aligners</a></li><li><a href="#" class="hover:text-dental-teal transition block">Orthodontics</a></li><li><a href="#" class="hover:text-dental-teal transition block">Oral Surgery</a></li></ul></div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Contact</h3><ul class="space-y-3 text-gray-400"><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-map-marker-alt text-dental-teal w-5"></i><span>123 Dental Ave, Los Angeles, CA</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-phone text-dental-teal w-5"></i><span>(888) 555-0123</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-envelope text-dental-teal w-5"></i><span>info@OrthoSmiledental.com</span></li></ul></div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono"><p>&copy; 2026 OrthoSmile Orthodontics &mdash; Premium Orthodontic Center. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbarWrapper');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Theme Toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            const themeMob = document.getElementById('theme-toggle-mobile');
+            const updateThemeUI = (dark) => {
+                [themeBtn, themeMob].forEach(b => {
+                    if (b) {
+                        const moon = b.querySelector('.fa-moon');
+                        const sun = b.querySelector('.fa-sun');
+                        if (dark) { moon?.classList.add('hidden'); sun?.classList.remove('hidden'); }
+                        else { moon?.classList.remove('hidden'); sun?.classList.add('hidden'); }
+                    }
+                });
+            };
+            const toggleTheme = () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeUI(isDark);
+            };
+            if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+            if (themeMob) themeMob.addEventListener('click', toggleTheme);
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                updateThemeUI(true);
+            }
+
+            // RTL Toggle
+            const rtlBtn = document.getElementById('rtl-toggle');
+            const rtlMob = document.getElementById('rtl-toggle-mobile');
+            const updateRtlUI = (isRtl) => {
+                document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+                [rtlBtn, rtlMob].forEach(b => b && b.classList.toggle('active', isRtl));
+            };
+            const toggleRtl = () => {
+                const isRtl = document.documentElement.dir !== 'rtl';
+                localStorage.setItem('dir', isRtl ? 'rtl' : 'ltr');
+                updateRtlUI(isRtl);
+            };
+            if (rtlBtn) rtlBtn.addEventListener('click', toggleRtl);
+            if (rtlMob) rtlMob.addEventListener('click', toggleRtl);
+            if (localStorage.getItem('dir') === 'rtl') updateRtlUI(true);
+
+            // Mobile Menu
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const icon = mobileToggle?.querySelector('i');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('open');
+                    icon?.classList.toggle('fa-bars');
+                    icon?.classList.toggle('fa-times');
+                    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+                });
+            }
+
+            // ===== MOBILE DROPDOWN =====
+            document.querySelectorAll('.mobile-dropdown-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const content = btn.nextElementSibling;
+                    content.classList.toggle('show');
+                    const chev = btn.querySelector('.fa-chevron-down');
+                    if (chev) {
+                        chev.style.transform = content.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+                    }
+                });
+            });
+
+            // Scroll Reveal
+            const reveals = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.15 });
+            reveals.forEach(el => revealObserver.observe(el));
+        });
+    </script>
+</body>
+</html>

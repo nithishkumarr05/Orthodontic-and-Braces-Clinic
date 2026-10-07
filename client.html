@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
+    <title>OrthoSmile Dental | Patient Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%B7%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'dental-blue': '#1A5276',
+                        'dental-teal': '#1ABC9C',
+                        'dental-light': '#F0F8FF',
+                        'dental-dark': '#0B1E26',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.7); }
+        .dark input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.7); }
+
+        html, body { overflow-x: hidden; }
+        body {
+            background-color: #F0F8FF;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark body { background-color: #0B1E26; color: #E2E8F0; }
+
+        /* Sidebar */
+        #sidebar {
+            transition: transform 0.3s ease;
+        }
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100dvh;
+                width: 18rem;
+                max-width: 85vw;
+                z-index: 70;
+                transform: translateX(-100%);
+                overflow-y: auto;
+            }
+            #sidebar.open { transform: translateX(0); }
+            [dir="rtl"] #sidebar { left: auto; right: 0; transform: translateX(100%); }
+            [dir="rtl"] #sidebar.open { transform: translateX(0); }
+        }
+        #mobile-overlay {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            position: fixed;
+            inset: 0;
+            z-index: 65;
+        }
+        #mobile-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* Sidebar links */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            color: #4A6070;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin-bottom: 0.25rem;
+        }
+        .dark .sidebar-link { color: #94A3B8; }
+        .sidebar-link:hover {
+            background: rgba(26, 188, 156, 0.08);
+            color: #1ABC9C;
+        }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #1A5276, #1ABC9C);
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -8px rgba(26,188,156,0.5);
+        }
+        .sidebar-link.active svg, .sidebar-link.active i { color: #FFFFFF; }
+        [dir="rtl"] .sidebar-link { flex-direction: row-reverse; }
+
+        /* Cards */
+        .dash-card {
+            background: #FFFFFF;
+            border: 1px solid #E2EBF0;
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px -4px rgba(26,82,118,0.06);
+        }
+        .dark .dash-card {
+            background: #14262F;
+            border-color: #1E3844;
+        }
+        .dash-card:hover {
+            border-color: #1ABC9C;
+            box-shadow: 0 12px 28px -12px rgba(26,188,156,0.25);
+        }
+
+        /* Progress bar */
+        .prog-bar {
+            height: 8px;
+            border-radius: 9999px;
+            background: #E2EBF0;
+            overflow: hidden;
+        }
+        .dark .prog-bar { background: #1E3844; }
+        .prog-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #1A5276, #1ABC9C);
+            transition: width 0.6s ease;
+        }
+
+        /* Badges */
+        .badge-teal { background: rgba(26,188,156,0.12); color: #1ABC9C; }
+        .badge-blue { background: rgba(26,82,118,0.12); color: #1A5276; }
+        .dark .badge-blue { background: rgba(26,188,156,0.15); color: #1ABC9C; }
+        .badge-amber { background: rgba(245,158,11,0.15); color: #B45309; }
+        .dark .badge-amber { background: rgba(245,158,11,0.20); color: #FBBF24; }
+        .badge-red { background: rgba(239,68,68,0.12); color: #DC2626; }
+        .dark .badge-red { background: rgba(239,68,68,0.18); color: #F87171; }
+        .badge-green { background: rgba(16,185,129,0.12); color: #059669; }
+        .dark .badge-green { background: rgba(16,185,129,0.18); color: #34D399; }
+
+        /* Before/After slider */
+        .ba-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            aspect-ratio: 4 / 3;
+            cursor: ew-resize;
+            user-select: none;
+        }
+        .ba-wrap img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .ba-after {
+            clip-path: inset(0 0 0 50%);
+        }
+        .ba-divider {
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 50%;
+            width: 3px;
+            background: #1ABC9C;
+            transform: translateX(-50%);
+            pointer-events: none;
+            box-shadow: 0 0 12px rgba(26,188,156,0.6);
+        }
+        .ba-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1ABC9C;
+            color: #0B1E26;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            pointer-events: none;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        .ba-label {
+            position: absolute;
+            top: 10px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .ba-label-before { left: 10px; background: rgba(0,0,0,0.6); color: white; }
+        .ba-label-after { right: 10px; background: #1ABC9C; color: #0B1E26; }
+
+        /* Payment ring */
+        .pay-ring {
+            background: conic-gradient(#1ABC9C 0deg 230deg, #E2EBF0 230deg 360deg);
+            border-radius: 50%;
+            position: relative;
+        }
+        .dark .pay-ring {
+            background: conic-gradient(#1ABC9C 0deg 230deg, #1E3844 230deg 360deg);
+        }
+        .pay-ring::after {
+            content: '';
+            position: absolute;
+            inset: 16%;
+            border-radius: 50%;
+            background: #FFFFFF;
+        }
+        .dark .pay-ring::after { background: #14262F; }
+
+        /* Appointment timeline */
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1ABC9C;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 0 0 2px #1ABC9C;
+            flex-shrink: 0;
+        }
+        .dark .timeline-dot { border-color: #14262F; }
+
+        /* Section visibility */
+        .admin-section { display: block; }
+        .admin-section.hidden { display: none; }
+
+        /* Buttons */
+        .btn-teal {
+            background: #1ABC9C;
+            color: #0B1E26;
+            font-weight: 700;
+            transition: all 0.25s ease;
+        }
+        .btn-teal:hover {
+            background: #16A085;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(26,188,156,0.5);
+        }
+        .btn-outline-teal {
+            border: 1.5px solid #1ABC9C;
+            color: #1ABC9C;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .btn-outline-teal:hover {
+            background: #1ABC9C;
+            color: #0B1E26;
+        }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #CBD5E1;
+            border-radius: 9999px;
+            transition: 0.3s;
+        }
+        .dark .switch-slider { background: #334155; }
+        .switch-slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .switch input:checked + .switch-slider { background: #1ABC9C; }
+        .switch input:checked + .switch-slider::before { transform: translateX(20px); }
+
+        /* Hide scrollbar utility */
+        .hide-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .hide-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
+        .dark .hide-scroll::-webkit-scrollbar-thumb { background: #334155; }
+
+        /* Rotate chevron for open FAQ */
+        details[open] summary .chev { transform: rotate(180deg); }
+        summary::-webkit-details-marker { display: none; }
+        summary { list-style: none; }
+        .chev { transition: transform 0.3s ease; }
+
+        /* Touch-friendly */
+        @media (max-width: 640px) {
+            button, a.sidebar-link, .tap { min-height: 44px; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-dental-dark border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
+
+            <!-- Left: menu + logo -->
+            <div class="flex items-center gap-3 min-w-0">
+                <button id="mobile-menu-open" class="lg:hidden p-2 rounded-xl hover:bg-dental-light dark:hover:bg-white/5 transition" aria-label="Open menu">
+                    <i class="fas fa-bars text-lg text-dental-blue dark:text-white"></i>
+                </button>
+                <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-md shadow-dental-teal/25" style="background-color:#1A5276;">
+                        <i class="fas fa-smile-beam text-dental-teal text-sm sm:text-base"></i>
+                    </div>
+                    <div class="hidden xs:block">
+                        <span class="text-base sm:text-lg font-bold text-dental-blue dark:text-white leading-tight block">
+                            Ortho<span style="color:#1ABC9C;">Care</span>
+                        </span>
+                        <span class="text-[9px] tracking-[0.18em] uppercase text-gray-400 font-semibold block">Patient Portal</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Right: status + toggles + avatar -->
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <div class="hidden md:flex items-center gap-2 bg-dental-light dark:bg-white/5 px-3 py-2 rounded-full">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-medium text-dental-blue dark:text-gray-300 whitespace-nowrap">Clinic Open &middot; Next: Tomorrow 10:30 AM</span>
+                </div>
+
+                <button id="rtl-toggle" class="w-9 h-9 rounded-full hover:bg-dental-light dark:hover:bg-white/5 transition flex items-center justify-center text-dental-blue dark:text-gray-300" title="Toggle RTL">
+                    <i class="fas fa-exchange-alt text-sm"></i>
+                </button>
+
+                <button id="theme-toggle" class="w-9 h-9 rounded-full hover:bg-dental-light dark:hover:bg-white/5 transition flex items-center justify-center text-dental-blue dark:text-gray-300" title="Toggle Theme">
+                    <i class="fas fa-moon light-icon"></i>
+                    <i class="fas fa-sun dark-icon hidden"></i>
+                </button>
+
+                <div class="flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-800">
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                        JD
+                    </div>
+                    <div class="hidden sm:block">
+                        <p class="text-xs sm:text-sm font-semibold text-dental-blue dark:text-white leading-tight">Jane Doe</p>
+                        <p class="text-[10px] text-gray-400">Patient ID: #OR-8421</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-overlay" class="lg:hidden"></div>
+
+    <!-- ================= MAIN LAYOUT ================= -->
+    <main class="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
+
+            <!-- ============ SIDEBAR ============ -->
+            <aside id="sidebar" class="lg:sticky lg:top-24 lg:h-fit w-72 flex-shrink-0 bg-white dark:bg-dental-dark lg:bg-transparent lg:dark:bg-transparent">
+                <div class="dash-card p-4 sm:p-5 h-full lg:h-auto">
+                    <div class="flex lg:hidden justify-between items-center mb-5">
+                        <span class="font-bold text-dental-teal">Patient Menu</span>
+                        <button id="mobile-menu-close" class="p-2 hover:bg-dental-light dark:hover:bg-white/5 rounded-lg" aria-label="Close menu">
+                            <i class="fas fa-times text-dental-blue dark:text-white"></i>
+                        </button>
+                    </div>
+
+                    <!-- Patient profile card -->
+                    <div class="flex items-center gap-3 pb-4 mb-4 border-b border-gray-200 dark:border-gray-800">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                            JD
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm text-dental-blue dark:text-white truncate">Jane Doe</p>
+                            <p class="text-[11px] text-gray-400 truncate">jane.doe@email.com</p>
+                        </div>
+                    </div>
+
+                    <nav class="flex flex-col gap-0.5">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold px-3 mb-2">Patient Dashboard</p>
+
+                        <a href="#" data-section="overview" class="sidebar-link active">
+                            <i class="fas fa-th-large w-5 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+
+                        <a href="#" data-section="appointments" class="sidebar-link">
+                            <i class="fas fa-calendar-check w-5 text-center"></i>
+                            <span>Appointments</span>
+                            <span class="ml-auto bg-dental-teal text-dental-dark text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
+                        </a>
+
+                        <a href="#" data-section="treatment" class="sidebar-link">
+                            <i class="fas fa-tooth w-5 text-center"></i>
+                            <span>Treatment Progress</span>
+                        </a>
+
+                        <a href="#" data-section="payments" class="sidebar-link">
+                            <i class="fas fa-credit-card w-5 text-center"></i>
+                            <span>Payments</span>
+                        </a>
+
+                        <a href="#" data-section="aftercare" class="sidebar-link">
+                            <i class="fas fa-notes-medical w-5 text-center"></i>
+                            <span>Aftercare Instructions</span>
+                        </a>
+
+                        <a href="#" data-section="reminders" class="sidebar-link">
+                            <i class="fas fa-bell w-5 text-center"></i>
+                            <span>Reminders</span>
+                        </a>
+
+                        <a href="#" data-section="profile" class="sidebar-link">
+                            <i class="fas fa-user-cog w-5 text-center"></i>
+                            <span>Profile Settings</span>
+                        </a>
+
+                        <a href="login.html" id="logoutBtn" class="sidebar-link mt-3 border-t border-gray-200 dark:border-gray-800 pt-3 !text-red-500 hover:!bg-red-500 hover:!text-white">
+                            <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                            <span>Logout</span>
+                        </a>
+                    </nav>
+
+                    <!-- Quick help card -->
+                    <div class="mt-5 p-4 rounded-2xl text-white" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                        <i class="fas fa-headset text-xl mb-2 text-white/90"></i>
+                        <p class="text-xs font-semibold mb-1">Need Help?</p>
+                        <p class="text-[11px] text-white/80 leading-snug mb-3">Talk to our care team anytime.</p>
+                        <a href="contact.html" class="block text-center text-[11px] font-bold bg-white text-dental-blue rounded-full py-2 hover:bg-dental-light transition">
+                            Contact Clinic
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ============ CONTENT ============ -->
+            <div class="flex-1 min-w-0 space-y-5 sm:space-y-6">
+
+                <!-- Welcome -->
+                <div class="mb-2">
+                    <h1 class="text-2xl sm:text-3xl font-serif font-bold text-dental-blue dark:text-white">Welcome back, Jane!</h1>
+                    <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Here's your treatment progress, upcoming visits, and everything else for a healthy smile.</p>
+                </div>
+
+                <!-- ============ OVERVIEW ============ -->
+                <div id="overview" class="admin-section space-y-5 sm:space-y-6">
+
+                    <!-- Stat cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">Treatment</p>
+                                    <p class="text-lg sm:text-xl lg:text-2xl font-bold text-dental-blue dark:text-white mt-1 truncate">Invisalign</p>
+                                    <p class="text-[10px] sm:text-xs text-dental-teal font-semibold mt-1 truncate">Week 12 of 40</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                    <i class="fas fa-tooth" style="color:#1ABC9C;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">Progress</p>
+                                    <p class="text-lg sm:text-xl lg:text-2xl font-bold text-dental-blue dark:text-white mt-1 truncate">30%</p>
+                                    <p class="text-[10px] sm:text-xs text-emerald-600 font-semibold mt-1 truncate">On track</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,82,118,0.10);">
+                                    <i class="fas fa-chart-line" style="color:#1A5276;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">Next Visit</p>
+                                    <p class="text-lg sm:text-xl lg:text-2xl font-bold text-dental-blue dark:text-white mt-1 truncate">Apr 28</p>
+                                    <p class="text-[10px] sm:text-xs text-amber-600 font-semibold mt-1 truncate">10:30 AM</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,0.12);">
+                                    <i class="fas fa-calendar-day" style="color:#D97706;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card p-4 sm:p-5">
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">Balance</p>
+                                    <p class="text-lg sm:text-xl lg:text-2xl font-bold text-dental-blue dark:text-white mt-1 truncate">$840</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 font-semibold mt-1 truncate">of $2,400</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,188,156,0.12);">
+                                    <i class="fas fa-wallet" style="color:#1ABC9C;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress + Next appointment -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+                        <!-- Treatment progress -->
+                        <div class="dash-card p-5 sm:p-6 xl:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-tooth text-dental-teal mr-2"></i>Invisalign Progress
+                                </h3>
+                                <span class="badge-teal text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full">Tray 12 / 40</span>
+                            </div>
+
+                            <div class="mb-5">
+                                <div class="flex justify-between text-xs sm:text-sm mb-2">
+                                    <span class="text-gray-500 dark:text-gray-400">Overall Alignment</span>
+                                    <span class="font-bold text-dental-blue dark:text-white">30%</span>
+                                </div>
+                                <div class="prog-bar"><div class="prog-fill" style="width: 30%"></div></div>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Next Change</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">May 2, 2026</p>
+                                </div>
+                                <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Wear Time</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">21h / day</p>
+                                </div>
+                                <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5 col-span-2 sm:col-span-1">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Next Check</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">Apr 28, 2026</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <button class="btn-teal px-5 py-2.5 rounded-full text-xs sm:text-sm" data-nav="appointments">
+                                    <i class="fas fa-calendar-plus mr-1"></i> Book Adjustment
+                                </button>
+                                <button class="btn-outline-teal px-5 py-2.5 rounded-full text-xs sm:text-sm" data-nav="treatment">
+                                    <i class="fas fa-images mr-1"></i> View Photos
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Next appointment card -->
+                        <div class="dash-card p-5 sm:p-6">
+                            <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white mb-4">
+                                <i class="fas fa-clock text-dental-teal mr-2"></i>Next Appointment
+                            </h3>
+
+                            <div class="p-4 rounded-2xl mb-4" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                                <p class="text-[10px] uppercase tracking-widest text-white/70 font-bold mb-1">Adjustment Visit</p>
+                                <p class="text-2xl font-serif font-bold text-white">Apr 28</p>
+                                <p class="text-sm text-white/90 mt-1">10:30 AM &middot; 45 min</p>
+                                <div class="flex items-center gap-2 mt-3 text-xs text-white/80">
+                                    <i class="fas fa-user-md"></i>
+                                    <span>Dr. Sarah Malik</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3 text-sm mb-4">
+                                <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-map-marker-alt text-dental-teal w-4"></i>
+                                    <span>123 Dental Ave, Suite 200</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle text-dental-teal w-4"></i>
+                                    <span>Bring current trays + retainer</span>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button class="flex-1 btn-teal py-2.5 rounded-xl text-xs sm:text-sm" data-nav="appointments">
+                                    <i class="fas fa-edit mr-1"></i> Reschedule
+                                </button>
+                                <button class="flex-1 btn-outline-teal py-2.5 rounded-xl text-xs sm:text-sm" data-nav="appointments">
+                                    <i class="fas fa-check mr-1"></i> Confirm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent activity + Home care -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="dash-card p-5 sm:p-6 xl:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white">
+                                    <i class="fas fa-history text-dental-teal mr-2"></i>Recent Activity
+                                </h3>
+                                <button class="text-dental-teal text-xs font-bold hover:underline" data-nav="treatment">View all</button>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <div class="timeline-dot mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Tray 11� Tray 12</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Progress photo uploaded� Apr 22, 2026</p>
+                                    </div>
+                                    <span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">On track</span>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <div class="timeline-dot mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Payment received &middot; $200</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Installment 4 of 12� Apr 15, 2026</p>
+                                    </div>
+                                    <span class="badge-teal text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <div class="timeline-dot mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Monthly check-in completed</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Dr. Malik� Apr 8, 2026</p>
+                                    </div>
+                                    <span class="badge-blue text-[10px] font-bold px-2 py-0.5 rounded-full">Done</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home care quick tips -->
+                        <div class="dash-card p-5 sm:p-6">
+                            <h3 class="font-bold text-base sm:text-lg text-dental-blue dark:text-white mb-4">
+                                <i class="fas fa-house-medical text-dental-teal mr-2"></i>Home Care Tips
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <i class="fas fa-brush text-dental-teal mt-0.5"></i>
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Brush after every meal� minimum 2 minutes.</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <i class="fas fa-water text-dental-teal mt-0.5"></i>
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Rinse aligners with cool water� never hot.</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <i class="fas fa-utensils text-dental-teal mt-0.5"></i>
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Remove trays before eating or drinking anything warm.</p>
+                                </div>
+                            </div>
+
+                            <button class="mt-4 w-full btn-outline-teal py-2.5 rounded-xl text-xs sm:text-sm" data-nav="aftercare">
+                                <i class="fas fa-book-medical mr-1"></i> Full Instructions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ APPOINTMENTS ============ -->
+                <div id="appointments" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white">
+                                    <i class="fas fa-calendar-check text-dental-teal mr-2"></i>Appointments
+                                </h2>
+                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Book, reschedule, or review your adjustment visits.</p>
+                            </div>
+                            <button id="bookApptBtn" class="btn-teal px-5 py-2.5 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                                <i class="fas fa-plus mr-1"></i> Book New Appointment
+                            </button>
+                        </div>
+
+                        <!-- Upcoming -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Upcoming</h3>
+                        <div class="space-y-3 mb-6">
+                            <div class="p-4 rounded-2xl border border-dental-teal/40 bg-dental-light dark:bg-white/5">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0" style="background:linear-gradient(135deg,#1A5276,#1ABC9C);">
+                                            <span class="text-[10px] font-bold uppercase">Apr</span>
+                                            <span class="text-lg font-bold leading-none">28</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-dental-blue dark:text-white text-sm sm:text-base">Invisalign Adjustment</p>
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">10:30 AM &middot; 45 min &middot; Dr. Sarah Malik</p>
+                                            <p class="text-[11px] text-gray-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>Room 3 &middot; 123 Dental Ave</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 flex-shrink-0">
+                                        <button class="btn-outline-teal px-4 py-2 rounded-full text-xs font-bold"><i class="fas fa-edit mr-1"></i>Reschedule</button>
+                                        <button class="btn-teal px-4 py-2 rounded-full text-xs font-bold"><i class="fas fa-check mr-1"></i>Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-dental-blue dark:text-white bg-dental-light dark:bg-white/5 flex-shrink-0">
+                                            <span class="text-[10px] font-bold uppercase">May</span>
+                                            <span class="text-lg font-bold leading-none">12</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-dental-blue dark:text-white text-sm sm:text-base">Monthly Check-in</p>
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">2:00 PM &middot; 30 min &middot; Dr. Sarah Malik</p>
+                                            <p class="text-[11px] text-gray-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>Room 3 &middot; 123 Dental Ave</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 flex-shrink-0">
+                                        <button class="btn-outline-teal px-4 py-2 rounded-full text-xs font-bold"><i class="fas fa-edit mr-1"></i>Reschedule</button>
+                                        <button class="btn-teal px-4 py-2 rounded-full text-xs font-bold"><i class="fas fa-check mr-1"></i>Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Past appointments -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Past Visits</h3>
+                        <div class="space-y-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-white/10 flex-shrink-0">
+                                        <i class="fas fa-check text-dental-teal"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Tray Change &middot; Tray 11 &rarr; 12</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Apr 8, 2026 &middot; Dr. Malik</p>
+                                    </div>
+                                </div>
+                                <span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full self-start sm:self-auto">Completed</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-white/10 flex-shrink-0">
+                                        <i class="fas fa-check text-dental-teal"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Monthly Check-in</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Mar 12, 2026 &middot; Dr. Malik</p>
+                                    </div>
+                                </div>
+                                <span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full self-start sm:self-auto">Completed</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-white/10 flex-shrink-0">
+                                        <i class="fas fa-times text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-dental-blue dark:text-white">Adjustment Visit</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">Feb 28, 2026 &middot; Cancelled</p>
+                                    </div>
+                                </div>
+                                <span class="badge-red text-[10px] font-bold px-2 py-0.5 rounded-full self-start sm:self-auto">Cancelled</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ TREATMENT PROGRESS ============ -->
+                <div id="treatment" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-tooth text-dental-teal mr-2"></i>Treatment Progress
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Compare before & after, track tray changes, and view clinical notes.</p>
+
+                        <!-- Before/After slider -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Before & After</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="ba-wrap" id="baSlider">
+                                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80" alt="Before treatment" class="ba-before">
+                                <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80" alt="After treatment" class="ba-after">
+                                <span class="ba-label ba-label-before">Before</span>
+                                <span class="ba-label ba-label-after">After</span>
+                                <div class="ba-divider"></div>
+                                <div class="ba-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">Treatment Start</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Feb 1, 2026</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">Est. Completion</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Nov 15, 2026</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">Total Trays</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">40 aligners</p>
+                                </div>
+                                <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">Retainers</p>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Included</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tray progress -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Tray Progress</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-500 dark:text-gray-400">Aligner 12 of 40</span>
+                                <span class="font-bold text-dental-blue dark:text-white">30% complete</span>
+                            </div>
+                            <div class="prog-bar"><div class="prog-fill" style="width:30%"></div></div>
+                        </div>
+
+                        <!-- Tray timeline -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <div class="p-3 rounded-xl border-2 border-dental-teal bg-dental-light dark:bg-white/5">
+                                <p class="text-[10px] uppercase tracking-wider text-dental-teal font-bold">Current</p>
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">Tray 12</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Apr 22 &ndash; May 2</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Next</p>
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">Tray 13</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">May 2 &ndash; May 12</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Upcoming</p>
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">Tray 14</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">May 12 &ndash; May 22</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-dental-light dark:bg-white/5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Upcoming</p>
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mt-1">Tray 15</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">May 22 &ndash; Jun 1</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PAYMENTS ============ -->
+                <div id="payments" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-credit-card text-dental-teal mr-2"></i>Payments & Installments
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Track your treatment plan installments and download invoices.</p>
+
+                        <!-- Summary -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <div class="dash-card p-5 flex items-center gap-4">
+                                <div class="pay-ring w-20 h-20 flex items-center justify-center flex-shrink-0">
+                                    <div class="relative z-10 text-center">
+                                        <p class="text-sm font-bold text-dental-blue dark:text-white leading-none">65%</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Paid</p>
+                                    <p class="text-lg font-bold text-dental-blue dark:text-white">$1,560</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400">of $2,400</p>
+                                </div>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Next Installment</p>
+                                <p class="text-2xl font-bold text-dental-blue dark:text-white mt-1">$200</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Due May 1, 2026</p>
+                                <button class="mt-3 w-full btn-teal py-2 rounded-xl text-xs">
+                                    <i class="fas fa-lock mr-1"></i> Pay Now
+                                </button>
+                            </div>
+
+                            <div class="dash-card p-5">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Plan</p>
+                                <p class="text-lg font-bold text-dental-blue dark:text-white mt-1">12 Installments</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Apr 2026 &ndash; Mar 2027</p>
+                                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1"><i class="fas fa-check-circle mr-1"></i> Auto-pay active</p>
+                            </div>
+                        </div>
+
+                        <!-- Installments table -->
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-3">Installment History</h3>
+                        <div class="hide-scroll overflow-x-auto">
+                            <table class="w-full text-xs sm:text-sm min-w-[560px]">
+                                <thead class="border-b border-gray-200 dark:border-gray-800 text-gray-400 text-[10px] uppercase tracking-wider">
+                                    <tr>
+                                        <th class="text-left py-3 px-2 font-bold">Invoice</th>
+                                        <th class="text-left py-3 px-2 font-bold">Date</th>
+                                        <th class="text-left py-3 px-2 font-bold">Amount</th>
+                                        <th class="text-left py-3 px-2 font-bold">Method</th>
+                                        <th class="text-left py-3 px-2 font-bold">Status</th>
+                                        <th class="text-right py-3 px-2 font-bold">Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                                    <tr>
+                                        <td class="py-3 px-2 font-semibold text-dental-blue dark:text-white">#INV-8421-04</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Apr 15, 2026</td>
+                                        <td class="py-3 px-2 font-bold text-dental-blue dark:text-white">$200.00</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Visa &bull;&bull;&bull;&bull; 4821</td>
+                                        <td class="py-3 px-2"><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                        <td class="py-3 px-2 text-right"><a href="#" class="text-dental-teal font-semibold hover:underline">Download</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-2 font-semibold text-dental-blue dark:text-white">#INV-8421-03</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Mar 15, 2026</td>
+                                        <td class="py-3 px-2 font-bold text-dental-blue dark:text-white">$200.00</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Visa &bull;&bull;&bull;&bull; 4821</td>
+                                        <td class="py-3 px-2"><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                        <td class="py-3 px-2 text-right"><a href="#" class="text-dental-teal font-semibold hover:underline">Download</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-2 font-semibold text-dental-blue dark:text-white">#INV-8421-02</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Feb 15, 2026</td>
+                                        <td class="py-3 px-2 font-bold text-dental-blue dark:text-white">$200.00</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Visa &bull;&bull;&bull;&bull; 4821</td>
+                                        <td class="py-3 px-2"><span class="badge-green text-[10px] font-bold px-2 py-0.5 rounded-full">Paid</span></td>
+                                        <td class="py-3 px-2 text-right"><a href="#" class="text-dental-teal font-semibold hover:underline">Download</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-2 font-semibold text-dental-blue dark:text-white">#INV-8421-05</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">May 1, 2026</td>
+                                        <td class="py-3 px-2 font-bold text-dental-blue dark:text-white">$200.00</td>
+                                        <td class="py-3 px-2 text-gray-500 dark:text-gray-400">Visa &bull;&bull;&bull;&bull; 4821</td>
+                                        <td class="py-3 px-2"><span class="badge-amber text-[10px] font-bold px-2 py-0.5 rounded-full">Upcoming</span></td>
+                                        <td class="py-3 px-2 text-right text-gray-400">&mdash;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+                            <button class="btn-teal px-5 py-2.5 rounded-full text-xs sm:text-sm"><i class="fas fa-download mr-1"></i> Download All Receipts</button>
+                            <button class="btn-outline-teal px-5 py-2.5 rounded-full text-xs sm:text-sm"><i class="fas fa-credit-card mr-1"></i> Update Payment Method</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ AFTERCARE INSTRUCTIONS ============ -->
+                <div id="aftercare" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-notes-medical text-dental-teal mr-2"></i>Aftercare Instructions
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Follow these instructions to protect your treatment and keep progress on track.</p>
+
+                        <!-- Accordion -->
+                        <div class="space-y-3">
+                            <details open class="group bg-dental-light dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                <summary class="flex justify-between items-center p-4 sm:p-5 cursor-pointer font-semibold text-dental-blue dark:text-white">
+                                    <span><i class="fas fa-brush text-dental-teal mr-2"></i> Daily Cleaning & Care</span>
+                                    <i class="fas fa-chevron-down chev text-dental-teal"></i>
+                                </summary>
+                                <div class="px-4 sm:px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-4">
+                                    Rinse your aligners with cool water every time you remove them. Brush them gently with a soft toothbrush and clear soap &mdash; no toothpaste (it scratches the plastic). Brush and floss your teeth before reinserting trays.
+                                </div>
+                            </details>
+
+                            <details class="group bg-dental-light dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                <summary class="flex justify-between items-center p-4 sm:p-5 cursor-pointer font-semibold text-dental-blue dark:text-white">
+                                    <span><i class="fas fa-utensils text-dental-teal mr-2"></i> Eating & Drinking</span>
+                                    <i class="fas fa-chevron-down chev text-dental-teal"></i>
+                                </summary>
+                                <div class="px-4 sm:px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-4">
+                                    Remove aligners before eating or drinking anything other than cool water. Avoid coffee, tea, and colored drinks while wearing trays, as they can stain the plastic and your teeth.
+                                </div>
+                            </details>
+
+                            <details class="group bg-dental-light dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                <summary class="flex justify-between items-center p-4 sm:p-5 cursor-pointer font-semibold text-dental-blue dark:text-white">
+                                    <span><i class="fas fa-clock text-dental-teal mr-2"></i> Wear Time & Tray Changes</span>
+                                    <i class="fas fa-chevron-down chev text-dental-teal"></i>
+                                </summary>
+                                <div class="px-4 sm:px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-4">
+                                    Wear each aligner for 20&ndash;22 hours per day, changing every 10&ndash;14 days (or as directed by your orthodontist). Never skip ahead &mdash; teeth need time to move safely.
+                                </div>
+                            </details>
+
+                            <details class="group bg-dental-light dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                <summary class="flex justify-between items-center p-4 sm:p-5 cursor-pointer font-semibold text-dental-blue dark:text-white">
+                                    <span><i class="fas fa-triangle-exclamation text-dental-teal mr-2"></i> What to Do If Something Feels Wrong</span>
+                                    <i class="fas fa-chevron-down chev text-dental-teal"></i>
+                                </summary>
+                                <div class="px-4 sm:px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-4">
+                                    Mild pressure is normal. Sharp pain, a broken tray, or a loose attachment should be reported immediately. Book a same-day emergency visit or call our clinic line at (888) 555-0123.
+                                </div>
+                            </details>
+
+                            <details class="group bg-dental-light dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                <summary class="flex justify-between items-center p-4 sm:p-5 cursor-pointer font-semibold text-dental-blue dark:text-white">
+                                    <span><i class="fas fa-shield-heart text-dental-teal mr-2"></i> Post-Treatment Retainer Care</span>
+                                    <i class="fas fa-chevron-down chev text-dental-teal"></i>
+                                </summary>
+                                <div class="px-4 sm:px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-4">
+                                    After your aligner treatment ends, wear the retainer nightly for the first 6 months, then as directed. Store it in its case when not in use, and never place it in hot water.
+                                </div>
+                            </details>
+                        </div>
+
+                        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                            <button class="btn-teal px-5 py-2.5 rounded-full text-xs sm:text-sm"><i class="fas fa-file-pdf mr-1"></i> Download PDF Guide</button>
+                            <button class="btn-outline-teal px-5 py-2.5 rounded-full text-xs sm:text-sm" data-nav="appointments"><i class="fas fa-calendar-plus mr-1"></i> Book Emergency Visit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ REMINDERS ============ -->
+                <div id="reminders" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-bell text-dental-teal mr-2"></i>Appointment Reminders
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Choose how and when you want to be reminded of upcoming visits.</p>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Email Reminders</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Sent to jane.doe@email.com</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">SMS Reminders</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Sent to +1 (555) 123-4567</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <div>
+                                    <p class="text-sm font-bold text-dental-blue dark:text-white">Push Notifications</p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Browser & mobile app alerts</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mb-3">Reminder Timing</p>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-white dark:hover:bg-white/5 transition border border-transparent has-[:checked]:border-dental-teal">
+                                        <input type="radio" name="timing" class="text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">24 hours before</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-white dark:hover:bg-white/5 transition border border-transparent has-[:checked]:border-dental-teal">
+                                        <input type="radio" name="timing" checked class="text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">48 hours before</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-white dark:hover:bg-white/5 transition border border-transparent has-[:checked]:border-dental-teal">
+                                        <input type="radio" name="timing" class="text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">1 week before</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-dental-light dark:bg-white/5">
+                                <p class="text-sm font-bold text-dental-blue dark:text-white mb-2">Additional Alerts</p>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="rounded text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">Tray change reminders</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="rounded text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">Payment due alerts</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" class="rounded text-dental-teal focus:ring-dental-teal">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">Special offers &amp; clinic news</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button class="btn-teal px-6 py-3 rounded-full text-sm"><i class="fas fa-save mr-1"></i> Save Preferences</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PROFILE SETTINGS ============ -->
+                <div id="profile" class="admin-section hidden">
+                    <div class="dash-card p-5 sm:p-6">
+                        <h2 class="text-xl sm:text-2xl font-serif font-bold text-dental-blue dark:text-white mb-1">
+                            <i class="fas fa-user-cog text-dental-teal mr-2"></i>Profile Settings
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">Update your personal details and clinic preferences.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Full Name</label>
+                                <input type="text" value="Jane Doe" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Email</label>
+                                <input type="email" value="jane.doe@email.com" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Phone</label>
+                                <input type="tel" value="+1 (555) 123-4567" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Date of Birth</label>
+                                <input type="date" value="1992-06-14" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Address</label>
+                                <input type="text" value="890 Oak Street, Apt 12B, Los Angeles, CA 90012" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Preferred Dentist</label>
+                                <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                                    <option>Dr. Sarah Malik</option>
+                                    <option>Dr. Ryan Patel</option>
+                                    <option>Dr. Emily Chen</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Preferred Language</label>
+                                <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                                    <option>English</option>
+                                    <option>Arabic</option>
+                                    <option>Spanish</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                            <button class="btn-teal px-6 py-3 rounded-full text-sm"><i class="fas fa-save mr-1"></i> Save Changes</button>
+                            <button class="btn-outline-teal px-6 py-3 rounded-full text-sm"><i class="fas fa-key mr-1"></i> Change Password</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="text-center text-[10px] sm:text-xs text-gray-400 border-t border-gray-200 dark:border-gray-800 pt-6 pb-4">
+                    <p>&copy; 2026 OrthoSmile Dental &mdash; Patient Portal &middot; Your Smile, Our Priority</p>
+                    <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2">
+                        <a href="#" class="hover:text-dental-teal transition">Privacy Policy</a>
+                        <a href="#" class="hover:text-dental-teal transition">HIPAA Notice</a>
+                        <a href="contact.html" class="hover:text-dental-teal transition">Contact Clinic</a>
+                    </div>
+                </footer>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ============ BOOK APPOINTMENT MODAL ============ -->
+    <div id="bookModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+        <div class="bg-white dark:bg-dental-dark rounded-3xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto hide-scroll">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center sticky top-0 bg-white dark:bg-dental-dark z-10">
+                <h3 class="font-serif text-xl font-bold text-dental-blue dark:text-white">Book New Appointment</h3>
+                <button id="closeBookModal" class="p-2 rounded-lg hover:bg-dental-light dark:hover:bg-white/5">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Appointment Type</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                        <option>Invisalign Adjustment</option>
+                        <option>Monthly Check-in</option>
+                        <option>Tray Change</option>
+                        <option>Retainer Fitting</option>
+                        <option>Emergency Visit</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Preferred Date</label>
+                        <input type="date" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Preferred Time</label>
+                        <select class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal">
+                            <option>9:00 AM</option>
+                            <option>10:30 AM</option>
+                            <option>12:00 PM</option>
+                            <option>2:00 PM</option>
+                            <option>3:30 PM</option>
+                            <option>5:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Notes (optional)</label>
+                    <textarea rows="3" placeholder="Anything you'd like the clinic to know?" class="w-full px-4 py-3 rounded-xl bg-dental-light dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-sm text-dental-blue dark:text-white focus:outline-none focus:ring-2 focus:ring-dental-teal resize-y"></textarea>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button id="confirmBook" class="flex-1 btn-teal py-3 rounded-xl text-sm font-bold"><i class="fas fa-check mr-1"></i> Confirm Booking</button>
+                    <button id="cancelBook" class="flex-1 btn-outline-teal py-3 rounded-xl text-sm font-bold">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+    <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] pointer-events-none w-auto max-w-[90vw]"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const html = document.documentElement;
+
+        // ===== THEME =====
+        const themeBtn = document.getElementById('theme-toggle');
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+            document.querySelectorAll('.light-icon').forEach(i => i.classList.toggle('hidden', theme === 'dark'));
+            document.querySelectorAll('.dark-icon').forEach(i => i.classList.toggle('hidden', theme === 'light'));
+            localStorage.setItem('theme', theme);
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(savedTheme);
+        themeBtn?.addEventListener('click', () => {
+            const next = html.classList.contains('dark') ? 'light' : 'dark';
+            applyTheme(next);
+        });
+
+        // ===== RTL =====
+        const savedDir = localStorage.getItem('dir') || 'ltr';
+        if (savedDir === 'rtl') html.setAttribute('dir', 'rtl');
+        document.getElementById('rtl-toggle')?.addEventListener('click', () => {
+            const isRtl = html.getAttribute('dir') === 'rtl';
+            if (isRtl) {
+                html.removeAttribute('dir');
+                localStorage.setItem('dir', 'ltr');
+            } else {
+                html.setAttribute('dir', 'rtl');
+                localStorage.setItem('dir', 'rtl');
+            }
+        });
+
+        // ===== MOBILE MENU =====
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        const openBtn = document.getElementById('mobile-menu-open');
+        const closeBtn = document.getElementById('mobile-menu-close');
+
+        const openMenu = () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        const closeMenu = () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+        openBtn?.addEventListener('click', openMenu);
+        closeBtn?.addEventListener('click', closeMenu);
+        overlay?.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+        // ===== SECTION NAVIGATION =====
+        const sections = ['overview','appointments','treatment','payments','aftercare','reminders','profile'];
+        const links = document.querySelectorAll('.sidebar-link[data-section]');
+
+        window.activateSection = function(id) {
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(id);
+            if (target) target.classList.remove('hidden');
+
+            links.forEach(l => {
+                l.classList.remove('active');
+                if (l.dataset.section === id) l.classList.add('active');
+            });
+
+            if (window.innerWidth < 1024) closeMenu();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                activateSection(link.dataset.section);
+            });
+        });
+
+        // Handle data-nav buttons (e.g., "Book Adjustment" jumps to appointments)
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+            btn.addEventListener('click', () => activateSection(btn.dataset.nav));
+        });
+
+        // ===== TOAST =====
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            let bg = '#1A5276';
+            let icon = '<i class="fas fa-info-circle"></i>';
+            if (type === 'success') { bg = '#10B981'; icon = '<i class="fas fa-check-circle"></i>'; }
+            if (type === 'warning') { bg = '#F59E0B'; icon = '<i class="fas fa-exclamation-triangle"></i>'; }
+            if (type === 'error') { bg = '#EF4444'; icon = '<i class="fas fa-times-circle"></i>'; }
+            toast.className = 'mb-2 px-5 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium flex items-center gap-2 pointer-events-auto text-white max-w-full';
+            toast.style.backgroundColor = bg;
+            toast.style.animation = 'toastFade 3s ease forwards';
+            toast.innerHTML = `${icon} <span class="break-words">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3100);
+        }
+        // Inject keyframes for toast
+        const styleTag = document.createElement('style');
+        styleTag.textContent = `@keyframes toastFade { 0%{opacity:0;transform:translateX(-50%) translateY(20px);} 15%{opacity:1;transform:translateX(-50%) translateY(0);} 85%{opacity:1;transform:translateX(-50%) translateY(0);} 100%{opacity:0;transform:translateX(-50%) translateY(-10px);} }`;
+        document.head.appendChild(styleTag);
+
+        // ===== LOGOUT =====
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // ===== BEFORE / AFTER SLIDER =====
+        const baWrap = document.getElementById('baSlider');
+        if (baWrap) {
+            const afterImg = baWrap.querySelector('.ba-after');
+            const divider = baWrap.querySelector('.ba-divider');
+            const handle = baWrap.querySelector('.ba-handle');
+            let dragging = false;
+
+            function setPosition(clientX) {
+                const rect = baWrap.getBoundingClientRect();
+                let x = clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width));
+                const pct = (x / rect.width) * 100;
+                afterImg.style.clipPath = `inset(0 0 0 ${pct}%)`;
+                divider.style.left = pct + '%';
+                handle.style.left = pct + '%';
+            }
+            const start = (e) => {
+                dragging = true;
+                setPosition(e.touches ? e.touches[0].clientX : e.clientX);
+            };
+            const move = (e) => {
+                if (!dragging) return;
+                setPosition(e.touches ? e.touches[0].clientX : e.clientX);
+            };
+            const end = () => { dragging = false; };
+
+            baWrap.addEventListener('mousedown', start);
+            baWrap.addEventListener('touchstart', start, { passive: true });
+            window.addEventListener('mousemove', move);
+            window.addEventListener('touchmove', move, { passive: true });
+            window.addEventListener('mouseup', end);
+            window.addEventListener('touchend', end);
+        }
+
+        // ===== BOOK APPOINTMENT MODAL =====
+        const bookModal = document.getElementById('bookModal');
+        const bookBtn = document.getElementById('bookApptBtn');
+        const closeModal = document.getElementById('closeBookModal');
+        const confirmBook = document.getElementById('confirmBook');
+        const cancelBook = document.getElementById('cancelBook');
+
+        function openModal() {
+            bookModal.classList.remove('hidden');
+            bookModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        function hideModal() {
+            bookModal.classList.add('hidden');
+            bookModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+        bookBtn?.addEventListener('click', openModal);
+        closeModal?.addEventListener('click', hideModal);
+        cancelBook?.addEventListener('click', hideModal);
+        bookModal?.addEventListener('click', (e) => {
+            if (e.target === bookModal) hideModal();
+        });
+        confirmBook?.addEventListener('click', () => {
+            hideModal();
+            showToast('Appointment request sent &mdash; we\'ll confirm by email shortly.', 'success');
+        });
+
+        // ===== RESIZE (auto-close sidebar on desktop) =====
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ===== INIT: welcome toast =====
+        setTimeout(() => {
+            showToast('Welcome back, Jane! Your next visit is Apr 28 &middot; 10:30 AM', 'info');
+        }, 400);
+    });
+    </script>
+</body>
+</html>

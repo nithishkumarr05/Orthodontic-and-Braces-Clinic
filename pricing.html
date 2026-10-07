@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
+    <title>Pricing | OrthoSmile Dental Clinic</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%B7%3C/text%3E%3C/svg%3E">
+    <script src="tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'dental-blue': '#1A5276',
+                        'dental-teal': '#1ABC9C',
+                        'dental-light': '#F0F8FF',
+                        'dental-dark': '#0B1E26',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        [dir="rtl"] .floating { animation-direction: reverse; }
+
+        /* ===== NAVBAR ===== */
+        .navbar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-wrapper.scrolled {
+            background: rgba(26, 82, 118, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .dark .navbar-wrapper {
+            background: rgba(11, 30, 38, 0.95);
+        }
+        .dark .navbar-wrapper.scrolled {
+            background: rgba(11, 30, 38, 1);
+        }
+
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+            padding: 0 24px;
+            transition: all 0.3s ease;
+        }
+        .navbar-wrapper.scrolled .navbar-inner {
+            height: 64px;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            text-decoration: none;
+            padding: 0 4px;
+        }
+        .logo-icon {
+            background: #1A5276;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(26, 188, 156, 0.3);
+            flex-shrink: 0;
+        }
+        .logo-icon i { color: #1ABC9C; font-size: 1.1rem; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; color: #ffffff; line-height: 1.1; }
+        .logo-text .highlight { color: #1ABC9C; }
+        .logo-sub { font-size: 0.4rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); font-weight: 600; display: block; margin-top: -1px; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
+            justify-content: center;
+        }
+        .nav-link {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dark .nav-link { color: rgba(255, 255, 255, 0.7); }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.10); color: #ffffff; }
+        .nav-link.active { background: rgba(26, 188, 156, 0.20); color: #1ABC9C; font-weight: 600; }
+
+        .dropdown-wrapper { position: relative; }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 170px;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 6px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(8px);
+            transition: all 0.25s ease;
+            z-index: 1000;
+            border: 1px solid rgba(26, 188, 156, 0.15);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+        }
+        .dark .dropdown-menu { background: rgba(11, 30, 38, 0.95); }
+        .dropdown-wrapper:hover .dropdown-menu,
+        .dropdown-wrapper.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 18px;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 2px 6px;
+            text-decoration: none;
+        }
+        .dropdown-item:hover { background: rgba(26, 188, 156, 0.15); color: #1ABC9C; }
+        .dropdown-item.active { background: rgba(26, 188, 156, 0.10); color: #1ABC9C; font-weight: 600; }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .btn-rounded {
+            padding: 0 16px;
+            height: 34px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-rounded.login {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.20);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .btn-rounded.login:hover { background: rgba(255, 255, 255, 0.10); border-color: #1ABC9C; color: #1ABC9C; }
+        .btn-rounded.signup {
+            background: #1ABC9C;
+            color: #1A5276;
+            border: 1.5px solid #1ABC9C;
+        }
+        .btn-rounded.signup:hover {
+            background: #16A085;
+            border-color: #16A085;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.3);
+        }
+        .btn-icon-rounded {
+            width: 34px; height: 34px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.8);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.85rem;
+        }
+        .dark .btn-icon-rounded { background: rgba(255, 255, 255, 0.04); color: rgba(255, 255, 255, 0.6); }
+        .btn-icon-rounded:hover { background: #1ABC9C; color: #1A5276; border-color: #1ABC9C; }
+
+        .mobile-toggle {
+            display: none;
+            width: 36px; height: 36px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .mobile-toggle:hover { background: rgba(26, 188, 156, 0.20); border-color: #1ABC9C; }
+
+        .mobile-menu {
+            display: none;
+            background: rgba(26, 82, 118, 0.96);
+            backdrop-filter: blur(16px);
+            border-radius: 0 0 24px 24px;
+            border: 1px solid rgba(26, 188, 156, 0.10);
+            border-top: none;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s ease;
+            margin: 0 4px;
+        }
+        .dark .mobile-menu { background: rgba(11, 30, 38, 0.96); }
+        .mobile-menu.open { max-height: 600px; }
+        .mobile-menu-item {
+            display: block;
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .mobile-menu-item.active { color: #1ABC9C; font-weight: 600; background: rgba(26, 188, 156, 0.06); border-left: 3px solid #1ABC9C; }
+        [dir="rtl"] .mobile-menu-item.active {
+            border-left: none;
+            border-right: 3px solid #1ABC9C;
+        }
+        .mobile-menu-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .mobile-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(0, 0, 0, 0.10);
+        }
+        .mobile-dropdown-content.show {
+            max-height: 200px;
+        }
+        .mobile-dropdown-item {
+            display: block;
+            padding: 8px 20px 8px 36px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .mobile-dropdown-item:hover {
+            color: #1ABC9C;
+        }
+        .mobile-dropdown-item.active {
+            color: #1ABC9C;
+            font-weight: 600;
+        }
+        .mobile-actions {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .mobile-actions .btn-rounded {
+            font-size: 0.75rem;
+            padding: 4px 14px;
+        }
+
+        /* ===== RESPONSIVE BREAKPOINTS ===== */
+
+        /* Large screens - full nav */
+        @media (min-width: 1200px) {
+            .mobile-toggle { display: none !important; }
+            .mobile-menu { display: none !important; }
+        }
+
+        /* Tablet / Small laptop - hide some nav items, show mobile toggle */
+        @media (max-width: 1199px) {
+            .mobile-toggle { display: flex !important; }
+            .mobile-menu { display: block !important; }
+
+            /* Hide desktop nav links, keep only essential */
+            .nav-links .nav-link:not(.keep) {
+                display: none;
+            }
+            .nav-links .dropdown-wrapper:not(.keep) {
+                display: none;
+            }
+            .desktop-action {
+                display: none !important;
+            }
+            
+            .nav-links {
+                justify-content: flex-end;
+                gap: 4px;
+            }
+            .navbar-inner {
+                height: 56px;
+                padding: 4px 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-wrapper.scrolled {
+            background: rgba(26, 82, 118, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .dark .navbar-wrapper {
+            background: rgba(11, 30, 38, 0.95);
+        }
+        .dark .navbar-wrapper.scrolled {
+            background: rgba(11, 30, 38, 1);
+        }
+
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+            padding: 0 24px;
+            transition: all 0.3s ease;
+        }
+        .navbar-wrapper.scrolled .navbar-inner {
+            height: 64px;
+        }
+            .logo-icon {
+                width: 30px;
+                height: 30px;
+                border-radius: 10px;
+            }
+            .logo-icon i {
+                font-size: 0.9rem;
+            }
+            .logo-text {
+                font-size: 0.9rem;
+            }
+            .logo-sub {
+                font-size: 0.35rem;
+            }
+            .mobile-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .btn-icon-rounded {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+            .btn-rounded {
+                font-size: 0.7rem;
+                padding: 4px 12px;
+            }
+            .mobile-menu-item {
+                font-size: 0.85rem;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0;
+            background: rgba(26, 82, 118, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-wrapper.scrolled {
+            background: rgba(26, 82, 118, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .dark .navbar-wrapper {
+            background: rgba(11, 30, 38, 0.95);
+        }
+        .dark .navbar-wrapper.scrolled {
+            background: rgba(11, 30, 38, 1);
+        }
+
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+            padding: 0 24px;
+            transition: all 0.3s ease;
+        }
+        .navbar-wrapper.scrolled .navbar-inner {
+            height: 64px;
+        }
+            .logo-icon {
+                width: 26px;
+                height: 26px;
+                border-radius: 8px;
+            }
+            .logo-icon i {
+                font-size: 0.75rem;
+            }
+            .logo-text {
+                font-size: 0.8rem;
+            }
+            .logo-sub {
+                display: none;
+            }
+            .mobile-toggle {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+            }
+            .btn-icon-rounded {
+                width: 26px;
+                height: 26px;
+                font-size: 0.65rem;
+            }
+            .btn-rounded {
+                font-size: 0.6rem;
+                padding: 3px 10px;
+                gap: 3px;
+            }
+            .btn-rounded i {
+                display: none;
+            }
+            .nav-actions .btn-rounded.login {
+                display: none;
+            }
+            .mobile-menu-item {
+                font-size: 0.8rem;
+                padding: 6px 14px;
+            }
+            .mobile-actions .btn-rounded {
+                font-size: 0.65rem;
+                padding: 3px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar-wrapper {
+                padding: 4px 6px;
+            }
+            .navbar-inner {
+                height: 38px;
+                border-radius: 24px;
+                padding: 2px 4px;
+            }
+            .logo-icon {
+                width: 22px;
+                height: 22px;
+                border-radius: 6px;
+            }
+            .logo-icon i {
+                font-size: 0.65rem;
+            }
+            .logo-text {
+                font-size: 0.65rem;
+            }
+            .mobile-toggle {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+            }
+            .btn-icon-rounded {
+                width: 22px;
+                height: 22px;
+                font-size: 0.55rem;
+            }
+            .btn-rounded {
+                font-size: 0.55rem;
+                padding: 2px 8px;
+            }
+            .nav-actions .btn-rounded.signup {
+                padding: 2px 8px;
+                font-size: 0.55rem;
+            }
+            .nav-actions .btn-icon-rounded {
+                display: none;
+            }
+        }
+
+        /* ===== OTHER COMPONENTS ===== */
+        .btn-primary {
+            background: #1ABC9C;
+            color: #1A5276;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-primary:hover { background: #1A5276; color: #1ABC9C; transform: scale(1.03); }
+        .btn-outline {
+            border: 2px solid #1ABC9C;
+            background: transparent;
+            color: #1ABC9C;
+            padding: 0.75rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline:hover { background: #1ABC9C; color: #1A5276; }
+
+        .pricing-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            transition: all 0.4s ease;
+            border: 1px solid #E8E8E8;
+            position: relative;
+        }
+        .dark .pricing-card {
+            background: #1A2A3A;
+            border-color: #2A3A4A;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: #1ABC9C;
+            box-shadow: 0 25px 40px -15px rgba(26, 188, 156, 0.25);
+        }
+        .pricing-card.popular {
+            border-color: #1ABC9C;
+            border-width: 2px;
+        }
+        .pricing-card .popular-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1ABC9C;
+            color: #1A5276;
+            padding: 6px 24px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 9999px;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px -3px rgba(26, 188, 156, 0.4);
+            z-index: 10;
+        }
+        .pricing-card .price-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #1A5276;
+        }
+        .dark .pricing-card .price-amount {
+            color: #1ABC9C;
+        }
+        .pricing-card .price-amount span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #94A3B8;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: #4B5563;
+        }
+        .dark .feature-item {
+            color: #CBD5E1;
+        }
+        .feature-item i {
+            color: #1ABC9C;
+            width: 18px;
+            flex-shrink: 0;
+        }
+
+        .social-icon {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.06);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            transition: all 0.3s;
+            color: #1ABC9C;
+            border: 1px solid rgba(26, 188, 156, 0.2);
+            text-decoration: none;
+        }
+        .dark .social-icon { background: rgba(255,255,255,0.03); }
+        .social-icon:hover { background: #1ABC9C !important; color: #1A5276; transform: translateY(-3px); }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(26, 188, 156, 0.10);
+            padding: 16px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-item .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1A5276;
+        }
+        .dark .faq-item .faq-question {
+            color: #E8EDEE;
+        }
+        .faq-item .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #6B7280;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .dark .faq-item .faq-answer {
+            color: #94A3B8;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-top: 10px;
+        }
+        .faq-item .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 430px) {
+            .section-title { font-size: 1.8rem !important; }
+            .pricing-card .price-amount { font-size: 2rem; }
+            .btn-primary, .btn-outline { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
+        }
+        @media (max-width: 360px) {
+            .section-title { font-size: 1.5rem !important; }
+            .pricing-card { padding: 1rem !important; }
+            .feature-item { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-dental-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar-wrapper" id="navbarWrapper">
+        <div class="navbar-inner">
+            <a href="index.html" class="logo-wrapper">
+                <div class="logo-icon">
+                    <i class="fas fa-smile-beam"></i></div>
+                <div><span class="logo-text">Ortho<span class="highlight">Smile</span></span><span class="logo-sub">BRACES CLINIC</span></div>
+            </a>
+            <div class="nav-links">
+                <div class="dropdown-wrapper keep">
+                    <span class="nav-link">Home <i class="fas fa-chevron-down text-[8px] ml-0.5 opacity-60"></i></span>
+                    <div class="dropdown-menu">
+                        <a href="index.html" class="dropdown-item">Home 1</a>
+                        <a href="home2.html" class="dropdown-item">Home 2</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="dentists.html" class="nav-link">Dentists</a>
+                <a href="treatments.html" class="nav-link">Treatments</a>
+                <a href="pricing.html" class="nav-link active">Pricing</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="dropdown-wrapper keep">
+                    <span class="nav-link">Dashboard <i class="fas fa-chevron-down text-[8px] ml-0.5 opacity-60"></i></span>
+                    <div class="dropdown-menu">
+                        <a href="client.html" class="dropdown-item">Client</a>
+                        <a href="admin.html" class="dropdown-item">Admin</a>
+                    </div>
+                </div>
+
+                
+                </div>
+            <div class="nav-actions">
+                <!-- RTL Toggle -->
+                <button id="rtl-toggle" class="btn-icon-rounded desktop-action" title="RTL">&#8644;</button>
+
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="btn-icon-rounded desktop-action" title="Theme">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun hidden"></i>
+                </button>
+
+                <!-- Book CTA -->
+                <a href="signup.html" class="btn-primary desktop-action" style="padding: 10px 24px; font-size: 0.9rem;"><i class="fas fa-user-plus"></i> Sign Up</a>
+
+                <!-- Mobile Toggle -->
+                <button id="mobile-toggle" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="mobile-menu">
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-btn flex justify-between items-center w-full mobile-menu-item">
+                    Home <i class="fas fa-chevron-down text-xs opacity-60"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a href="index.html" class="mobile-dropdown-item">Home 1</a>
+                    <a href="home2.html" class="mobile-dropdown-item">Home 2</a>
+                </div>
+            </div>
+            <a href="about.html" class="mobile-menu-item">About</a>
+            <a href="services.html" class="mobile-menu-item">Services</a>
+            <a href="dentists.html" class="mobile-menu-item">Dentists</a>
+            <a href="treatments.html" class="mobile-menu-item">Treatments</a>
+            <a href="pricing.html" class="mobile-menu-item active">Pricing</a>
+            <a href="contact.html" class="mobile-menu-item">Contact</a>
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-btn flex justify-between items-center w-full mobile-menu-item">
+                    Dashboard <i class="fas fa-chevron-down text-xs opacity-60"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a href="client.html" class="mobile-dropdown-item">Client</a>
+                    <a href="admin.html" class="mobile-dropdown-item">Admin</a>
+                </div>
+            </div>
+            <div class="mobile-actions">
+                <button id="theme-toggle-mobile" class="btn-icon-rounded"><i class="fas fa-moon"></i><i class="fas fa-sun hidden"></i></button>
+                <button id="rtl-toggle-mobile" class="btn-icon-rounded">&#8644;</button>
+                <a href="signup.html" class="btn-primary w-full text-center mt-2 justify-center" style="padding: 12px 24px;"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SECTION 1: HERO / PAGE HEADER ===== -->
+    <!-- ===== SECTION 1: HERO / PAGE HEADER ===== -->
+    <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark">
+        <div class="absolute inset-0 z-0">
+            <div class="w-full h-full bg-[url('https://cdn.magicdecor.in/com/2024/04/17150811/shutterstock_2095982293_smile1.jpg')] bg-cover bg-center opacity-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dental-blue/30 to-dental-dark/80"></div>
+        </div>
+        <div class="absolute inset-0 pointer-events-none opacity-20">
+            <div class="absolute top-1/4 left-10 floating text-dental-teal"><i class="fas fa-hand-holding-usd fa-4x"></i></div>
+            <div class="absolute bottom-1/4 right-10 floating text-dental-teal" style="animation-delay: 2s;"><i class="fas fa-file-invoice-dollar fa-3x"></i></div>
+        </div>
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+            <span class="inline-block text-dental-teal font-bold tracking-[0.2em] uppercase text-sm mb-4 border border-dental-teal/30 px-5 py-2 rounded-full backdrop-blur-sm">Flexible Payment Plans</span>
+            <h1 class="font-serif text-5xl md:text-7xl text-white leading-[1.1] font-medium mb-6">
+                Smile Now, <span class="italic text-dental-teal">Pay Later</span>
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                Don't let finances stand in the way of your oral health. Explore our easy, affordable, and flexible Pricing options tailored to your budget.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <a href="#plans" class="btn-primary"><i class="fas fa-calculator"></i> View Options</a>
+                <a href="#faq" class="btn-outline border-white text-white hover:bg-white hover:text-dental-blue"><i class="fas fa-question-circle"></i> Pricing FAQs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: BENEFITS ===== -->
+    <section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Why Finance?</span>
+                <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">Benefits of <span class="italic text-dental-teal">Pricing</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-2xl bg-dental-light dark:bg-dental-dark/50 border border-transparent hover:border-dental-teal transition-all text-center flex flex-col">
+                    <div class="w-16 h-16 bg-white dark:bg-dental-dark rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-dental-teal shadow-lg"><i class="fas fa-percent"></i></div>
+                    <h4 class="text-xl font-bold mb-3 min-h-[56px] flex items-center justify-center">0% Interest Options</h4>
+                    <p class="text-gray-600 dark:text-gray-400">Qualify for interest-free payment plans for up to 24 months, keeping your treatment affordable.</p>
+                </div>
+                <div class="p-8 rounded-2xl bg-dental-light dark:bg-dental-dark/50 border border-transparent hover:border-dental-teal transition-all text-center flex flex-col">
+                    <div class="w-16 h-16 bg-white dark:bg-dental-dark rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-dental-teal shadow-lg"><i class="fas fa-bolt"></i></div>
+                    <h4 class="text-xl font-bold mb-3 min-h-[56px] flex items-center justify-center">Instant Approval</h4>
+                    <p class="text-gray-600 dark:text-gray-400">Get a Pricing decision in minutes without a hard credit check affecting your score.</p>
+                </div>
+                <div class="p-8 rounded-2xl bg-dental-light dark:bg-dental-dark/50 border border-transparent hover:border-dental-teal transition-all text-center flex flex-col">
+                    <div class="w-16 h-16 bg-white dark:bg-dental-dark rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-dental-teal shadow-lg"><i class="fas fa-piggy-bank"></i></div>
+                    <h4 class="text-xl font-bold mb-3 min-h-[56px] flex items-center justify-center">No Hidden Fees</h4>
+                    <p class="text-gray-600 dark:text-gray-400">What you see is what you pay. We guarantee complete transparency in all our Pricing contracts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3: ACCEPTED METHODS ===== -->
+    <section class="py-20 md:py-24 px-6 bg-dental-light dark:bg-dental-dark/80 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="font-serif text-4xl text-gray-900 dark:text-white font-bold mb-4">We Accept All <span class="italic text-dental-teal">Major Methods</span></h2>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 text-lg">We strive to make your visit as convenient as possible. You can use multiple payment methods to cover your treatment costs.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-dental-teal"></i> <span class="dark:text-gray-300">Major Credit & Debit Cards (Visa, Mastercard, Amex)</span></li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-dental-teal"></i> <span class="dark:text-gray-300">HSA & FSA Accounts</span></li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-dental-teal"></i> <span class="dark:text-gray-300">Most Major PPO Insurances</span></li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-dental-teal"></i> <span class="dark:text-gray-300">Cash and Personal Checks</span></li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2">
+    <div class="rounded-3xl overflow-hidden shadow-2xl relative group">
+        <img src="assests/friendly_reception_bg.jpg" alt="Friendly reception desk" class="w-full h-[350px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-dental-dark/90 via-dental-dark/20 to-transparent"></div>
+        <div class="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl">
+            <div class="flex gap-4 text-white text-3xl">
+                <i class="fab fa-cc-visa hover:text-blue-400 transition-colors cursor-pointer"></i>
+                <i class="fab fa-cc-mastercard hover:text-red-400 transition-colors cursor-pointer"></i>
+                <i class="fab fa-cc-amex hover:text-blue-300 transition-colors cursor-pointer"></i>
+                <i class="fab fa-cc-discover hover:text-orange-400 transition-colors cursor-pointer"></i>
+                <i class="fas fa-money-bill-wave hover:text-green-400 transition-colors cursor-pointer"></i>
+            </div>
+            <span class="text-white font-semibold text-sm tracking-wider uppercase">Secure & Flexible</span>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4: Pricing PLANS ===== -->
+    <section id="plans" class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Partnerships</span>
+                <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">Pricing <span class="italic text-dental-teal">Partners</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="pricing-card p-8 text-center flex flex-col h-full border border-gray-200 dark:border-gray-700 rounded-2xl relative">
+                    <h4 class="text-2xl font-bold mb-2">CareCredit</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">The nation's leading healthcare credit card.</p>
+                    <div class="text-left space-y-3 flex-grow">
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> 6, 12, or 18 months 0% APR</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Instant credit decision</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Use for the whole family</div>
+                    </div>
+                    <a href="#" class="btn-outline w-full justify-center mt-8">Apply Now</a>
+                </div>
+                <div class="pricing-card popular p-8 text-center flex flex-col h-full border-2 border-dental-teal rounded-2xl relative shadow-xl transform md:-translate-y-4">
+                    <span class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-dental-teal text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most Approved</span>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">In-House Plan</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">OrthoSmile's dedicated zero-interest payment plan.</p>
+                    <div class="text-left space-y-3 flex-grow">
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Guaranteed Approval</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> No credit check required</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Spread cost up to 12 months</div>
+                    </div>
+                    <a href="#" class="btn-primary w-full justify-center mt-8 whitespace-nowrap">Ask Us About It</a>
+                </div>
+                <div class="pricing-card p-8 text-center flex flex-col h-full border border-gray-200 dark:border-gray-700 rounded-2xl relative">
+                    <h4 class="text-2xl font-bold mb-2">LendingClub</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">High-limit Pricing for major dental procedures.</p>
+                    <div class="text-left space-y-3 flex-grow">
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Up to $50,000 funding</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Terms up to 60 months</div>
+                        <div class="feature-item"><i class="fas fa-check text-dental-teal"></i> Low fixed monthly payments</div>
+                    </div>
+                    <a href="#" class="btn-outline w-full justify-center mt-8">Check Rate</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5: PROCESS ===== -->
+    <section class="py-20 md:py-28 px-6 bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark text-white">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title font-serif text-4xl md:text-5xl font-bold mt-2">Simple <span class="italic text-dental-teal">3-Step Process</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Line connecting steps (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 z-0"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="w-20 h-20 mx-auto bg-dental-dark border-4 border-dental-teal rounded-full flex items-center justify-center text-3xl font-bold text-dental-teal mb-6 shadow-[0_0_20px_rgba(26,188,156,0.3)]">1</div>
+                    <h4 class="text-xl font-bold mb-2">Consultation</h4>
+                    <p class="text-gray-300 text-sm">Visit us for an exam. We'll present a clear treatment plan and exact costs.</p>
+                </div>
+                <div class="relative z-10 text-center">
+                    <div class="w-20 h-20 mx-auto bg-dental-dark border-4 border-dental-teal rounded-full flex items-center justify-center text-3xl font-bold text-dental-teal mb-6 shadow-[0_0_20px_rgba(26,188,156,0.3)]">2</div>
+                    <h4 class="text-xl font-bold mb-2">Apply Online</h4>
+                    <p class="text-gray-300 text-sm">Fill out a simple form for our Pricing partners and get approved in seconds.</p>
+                </div>
+                <div class="relative z-10 text-center">
+                    <div class="w-20 h-20 mx-auto bg-dental-dark border-4 border-dental-teal rounded-full flex items-center justify-center text-3xl font-bold text-dental-teal mb-6 shadow-[0_0_20px_rgba(26,188,156,0.3)]">3</div>
+                    <h4 class="text-xl font-bold mb-2">Smile Now</h4>
+                    <p class="text-gray-300 text-sm">Start your treatment immediately while paying over time comfortably.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6: FAQ ===== -->
+    <section id="faq" class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-dark/80 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold tracking-[0.2em] uppercase text-sm mb-4 block">Frequently Asked</span>
+                <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">Pricing <span class="italic text-dental-teal">Questions</span></h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="faq-item active">
+                    <div class="faq-question">
+                        <span>Will applying for Pricing affect my credit score?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">Most of our partners, including CareCredit, offer a pre-qualification process that only uses a "soft" credit pull, meaning it will not affect your credit score to see if you qualify.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need a down payment?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">In most cases, 0% interest plans require no down payment. Some long-term Pricing options or in-house plans may require a small deposit to begin treatment.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I finance cosmetic procedures?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">Yes! Pricing can be used for any dental treatment, including elective cosmetic procedures like veneers, teeth whitening, and Invisalign, which are often not covered by insurance.</div>
+                </div>
+            <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Does my dental insurance cover orthodontic treatment?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">Many dental insurance plans cover a portion of orthodontic treatment up to a lifetime maximum. We will verify your benefits during your free consultation and help you maximize your coverage.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are there any hidden fees in my treatment plan?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">No, we believe in complete transparency. Your quoted price includes everything from start to finish: all appointments, appliances, emergency visits, and your first set of retainers.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do you offer family discounts if multiple children need braces?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">Yes! We offer a sibling discount for families treating multiple children with us. Ask our treatment coordinator for details during your consultation.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What happens if my treatment takes longer than expected?</span>
+                        <i class="fas fa-chevron-down faq-icon text-dental-teal"></i>
+                    </div>
+                    <div class="faq-answer">Your quoted price is a flat fee for the entire treatment. If it takes a few months longer than initially estimated to achieve the perfect result, there are no additional charges.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="pt-16 pb-8 bg-black text-white">
+        <div class="max-w-[1400px] mx-auto px-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div class="text-center md:text-start">
+                    <a href="index.html" class="logo-wrapper mb-6 justify-center md:justify-start group" style="padding: 0; width: 100%;">
+                        <div class="logo-icon shadow-lg shadow-black/20">
+                            <i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <span class="logo-text drop-shadow-sm">Ortho<span class="highlight">Smile</span></span>
+                            <span class="logo-sub">BRACES CLINIC</span>
+                        </div>
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Your trusted partner for comprehensive dental care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
+                    <div class="flex gap-3 justify-center md:justify-start">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Quick Links</h3><ul class="space-y-2 text-gray-400"><li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li><li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li><li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li></ul></div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Treatments</h3><ul class="space-y-2 text-gray-400"><li><a href="#" class="hover:text-dental-teal transition block">General Dentistry</a></li><li><a href="#" class="hover:text-dental-teal transition block">Cosmetic Dentistry</a></li><li><a href="#" class="hover:text-dental-teal transition block">Orthodontics</a></li><li><a href="#" class="hover:text-dental-teal transition block">Oral Surgery</a></li></ul></div>
+                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Contact</h3><ul class="space-y-3 text-gray-400"><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-map-marker-alt text-dental-teal w-5"></i><span>123 Dental Ave, Los Angeles, CA</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-phone text-dental-teal w-5"></i><span>(888) 555-0123</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-envelope text-dental-teal w-5"></i><span>info@OrthoSmiledental.com</span></li></ul></div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono"><p>Â&copy; 2026 OrthoSmile Dental â€&rdquo; Premium Oral Care Center. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbarWrapper');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Theme Toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            const themeMob = document.getElementById('theme-toggle-mobile');
+            const updateThemeUI = (dark) => {
+                [themeBtn, themeMob].forEach(b => {
+                    if (b) {
+                        const moon = b.querySelector('.fa-moon');
+                        const sun = b.querySelector('.fa-sun');
+                        if (dark) { moon?.classList.add('hidden'); sun?.classList.remove('hidden'); }
+                        else { moon?.classList.remove('hidden'); sun?.classList.add('hidden'); }
+                    }
+                });
+            };
+            const toggleTheme = () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeUI(isDark);
+            };
+            if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+            if (themeMob) themeMob.addEventListener('click', toggleTheme);
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                updateThemeUI(true);
+            }
+
+            // RTL Toggle
+            const rtlBtn = document.getElementById('rtl-toggle');
+            const rtlMob = document.getElementById('rtl-toggle-mobile');
+            const updateRtlUI = (isRtl) => {
+                document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+                [rtlBtn, rtlMob].forEach(b => b && b.classList.toggle('active', isRtl));
+            };
+            const toggleRtl = () => {
+                const isRtl = document.documentElement.dir !== 'rtl';
+                localStorage.setItem('dir', isRtl ? 'rtl' : 'ltr');
+                updateRtlUI(isRtl);
+            };
+            if (rtlBtn) rtlBtn.addEventListener('click', toggleRtl);
+            if (rtlMob) rtlMob.addEventListener('click', toggleRtl);
+            if (localStorage.getItem('dir') === 'rtl') updateRtlUI(true);
+
+            // Mobile Menu
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const icon = mobileToggle?.querySelector('i');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('open');
+                    icon?.classList.toggle('fa-bars');
+                    icon?.classList.toggle('fa-times');
+                    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+                });
+            }
+
+            // Mobile Dropdown
+            document.querySelectorAll('.mobile-dropdown-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const content = btn.nextElementSibling;
+                    content.classList.toggle('show');
+                    const chev = btn.querySelector('.fa-chevron-down');
+                    if (chev) {
+                        chev.style.transform = content.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+                    }
+                });
+            });
+
+            // FAQ Accordion
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+
+            // Scroll Reveal
+            const reveals = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.15 });
+            reveals.forEach(el => revealObserver.observe(el));
+        });
+    </script>
+</body>
+</html>
