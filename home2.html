@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
@@ -22,7 +22,9 @@
                         'dental-blue': '#1A5276',
                         'dental-teal': '#1ABC9C',
                         'dental-light': '#F0F8FF',
-                        'dental-dark': '#0B1E26',
+                        'dental-dark': '#000000',
+                        'dental-alt': '#111A22',
+                        'dental-card': '#16222E',
                     }
                 }
             }
@@ -53,10 +55,12 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .dark .navbar-wrapper {
-            background: rgba(11, 30, 38, 0.95);
+            background: rgba(0, 0, 0, 0.92);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         .dark .navbar-wrapper.scrolled {
-            background: rgba(11, 30, 38, 1);
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
         }
 
         .navbar-inner {
@@ -142,7 +146,8 @@
             border: 1px solid rgba(26, 188, 156, 0.15);
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
         }
-        .dark .dropdown-menu { background: rgba(11, 30, 38, 0.95); }
+        .dark .dropdown-menu { background: rgba(0, 0, 0, 0.92);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
         .dropdown-wrapper:hover .dropdown-menu,
         .dropdown-wrapper.open .dropdown-menu {
             opacity: 1;
@@ -195,7 +200,7 @@
         .btn-rounded.login:hover { background: rgba(255, 255, 255, 0.10); border-color: #1ABC9C; color: #1ABC9C; }
         .btn-rounded.signup {
             background: #1ABC9C;
-            color: #1A5276;
+            color: #FFFFFF;
             border: 1.5px solid #1ABC9C;
         }
         .btn-rounded.signup:hover {
@@ -248,7 +253,7 @@
             transition: max-height 0.4s ease;
             margin: 0 4px;
         }
-        .dark .mobile-menu { background: rgba(11, 30, 38, 0.96); }
+        .dark .mobile-menu { background: rgba(0, 0, 0, 0.98); }
         .mobile-menu.open { max-height: 600px; }
         .mobile-menu-item {
             display: block;
@@ -303,10 +308,10 @@
         /* ===== OTHER COMPONENTS ===== */
         .btn-primary {
             background: #1ABC9C;
-            color: #1A5276;
+            color: #FFFFFF;
             padding: 0.8rem 2rem;
             border-radius: 60px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
@@ -316,7 +321,7 @@
             cursor: pointer;
             text-decoration: none;
         }
-        .btn-primary:hover { background: #1A5276; color: #1ABC9C; transform: scale(1.03); }
+        .btn-primary:hover { background: #1A5276; color: #FFFFFF; transform: scale(1.03); }
         .btn-outline {
             border: 2px solid #1ABC9C;
             background: transparent;
@@ -342,8 +347,8 @@
             overflow: hidden;
         }
         .dark .service-card {
-            background: #1A2A3A;
-            border-color: #2A3A4A;
+            background: #111A22;
+            border-color: rgba(255, 255, 255, 0.08);
         }
         .service-card:hover {
             transform: translateY(-8px);
@@ -358,8 +363,8 @@
             border: 1px solid #E8E8E8;
         }
         .dark .testimonial-card {
-            background: #1A2A3A;
-            border-color: #2A3A4A;
+            background: #111A22;
+            border-color: rgba(255, 255, 255, 0.08);
         }
         .testimonial-card:hover {
             border-color: #1ABC9C;
@@ -406,7 +411,7 @@
         }
     </style>
 </head>
-<body class="bg-white dark:bg-dental-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+<body class="bg-white dark:bg-dental-dark text-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans overflow-x-hidden w-full relative">
 
     <!-- ===== ROUNDED NAVBAR ===== -->
     <nav class="navbar-wrapper" id="navbarWrapper">
@@ -492,216 +497,329 @@
         </div>
     </nav>
 
-    <!-- ===== SECTION 1: HERO with Video/Image Overlay ===== -->
-    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark">
-        <div class="absolute inset-0 z-0">
-            <div class="w-full h-full bg-[url('assests/friendly_reception_bg.jpg')] bg-cover bg-center opacity-15"></div>
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dental-blue/30 to-dental-dark/90"></div>
+    <!-- ===== SECTION 1: HERO - Split Showcase Layout ===== -->
+    <section class="relative min-h-screen flex flex-col justify-between pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-gradient-to-br from-[#0B1E26] via-[#103444] to-[#0A1A22] text-white">
+        <!-- Ambient Background Glows & Subtle Texture -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-dental-teal/15 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 -right-24 w-96 h-96 bg-dental-blue/30 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-1/3 w-80 h-80 bg-dental-teal/10 rounded-full blur-3xl"></div>
+            <!-- Delicate dot mesh overlay -->
+            <div class="absolute inset-0 bg-[radial-gradient(rgba(26,188,156,0.12)_1px,transparent_1px)] [background-size:24px_24px] opacity-40"></div>
         </div>
-        <div class="absolute inset-0 pointer-events-none opacity-20">
-            <div class="absolute top-1/4 left-10 floating text-dental-teal"><i class="fas fa-smile-beam fa-4x"></i></div>
-            <div class="absolute bottom-1/4 right-10 floating text-dental-teal" style="animation-delay: 2s;"><i class="fas fa-heart fa-3x"></i></div>
-            <div class="absolute top-1/3 right-1/4 floating text-dental-teal" style="animation-delay: 4s;"><i class="fas fa-smile fa-3x"></i></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 my-auto py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                <!-- Left Column: Content & Conversion (7 Cols) -->
+                <div class="lg:col-span-7 text-start">
+                    <!-- Eyebrow Pill Badge -->
+                    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 dark:bg-dental-teal/15 border border-dental-teal/30 backdrop-blur-md mb-6 shadow-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-dental-teal animate-ping"></span>
+                        <span class="text-xs uppercase tracking-widest font-bold text-dental-teal">Next-Gen Orthodontics</span>
+                        <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-dental-teal/50"></span>
+                        <span class="hidden sm:inline text-xs text-gray-300 font-medium">Digital 3D Smile Design</span>
+                    </div>
+
+                    <!-- Editorial Headline -->
+                    <h1 class="hero-title font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-medium leading-[1.08] tracking-tight mb-6 text-white">
+                        Precision Alignment for <br class="hidden sm:inline">
+                        <span class="italic text-dental-teal font-normal">Confident, Lasting</span> Smiles
+                    </h1>
+
+                    <!-- Descriptive Paragraph -->
+                    <p class="text-gray-300 text-base sm:text-lg lg:text-xl mb-8 max-w-xl leading-relaxed">
+                        Transform your smile with custom clear aligners and gentle precision braces. Enjoy fewer clinic visits, accelerated timelines, and 0% interest financing tailored for all ages.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 mb-10">
+                        <a href="appointment.html" class="btn-primary shadow-xl shadow-dental-teal/20 text-base px-7 py-3.5 hover:scale-105 transition-all">
+                            <i class="fas fa-calendar-check text-white mr-1"></i>
+                            <span>Book Free 3D Scan</span>
+                        </a>
+                        <a href="treatments.html" class="btn-outline border-white/40 text-white hover:border-dental-teal hover:bg-dental-teal/10 hover:text-dental-teal text-base px-6 py-3.5 transition-all">
+                            <i class="fas fa-wand-magic-sparkles text-dental-teal mr-1"></i>
+                            <span>Compare Treatments</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust Stack & Patient Social Proof -->
+                    <div class="pt-6 border-t border-white/10 flex flex-wrap items-center gap-6 sm:gap-10">
+                        <!-- Patient Review Block -->
+                        <div class="flex items-center gap-3">
+                            <div class="flex -space-x-2.5 rtl:space-x-reverse">
+                                <div class="w-10 h-10 rounded-full border-2 border-[#103444] bg-dental-teal text-dental-blue font-bold flex items-center justify-center text-xs shadow-md">JM</div>
+                                <div class="w-10 h-10 rounded-full border-2 border-[#103444] bg-[#1A5276] text-white font-bold flex items-center justify-center text-xs shadow-md">RT</div>
+                                <div class="w-10 h-10 rounded-full border-2 border-[#103444] bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shadow-md">AL</div>
+                                <div class="w-10 h-10 rounded-full border-2 border-[#103444] bg-dental-dark text-dental-teal font-bold flex items-center justify-center text-xs border-dental-teal/50 shadow-md">10k+</div>
+                            </div>
+                            <div>
+                                <div class="flex text-amber-400 text-xs gap-1">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-xs text-gray-300 font-medium mt-0.5"><span class="font-bold text-white">4.9/5</span> from 2,800+ patients</p>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-300 font-medium">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-dental-teal text-sm"></i>
+                                <span>0% Interest Financing</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-dental-teal text-sm"></i>
+                                <span>Board-Certified Orthos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Visual Stage & Floating Cards (5 Cols) -->
+                <div class="lg:col-span-5 relative mt-6 lg:mt-0">
+                    <!-- Ambient Backlight -->
+                    <div class="absolute -inset-2 bg-gradient-to-r from-dental-teal/30 to-dental-blue/40 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition duration-1000"></div>
+
+                    <!-- Main Showcase Container -->
+                    <div class="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-dental-dark/80 group">
+                        <!-- Featured Orthodontic Image -->
+                        <div class="relative h-[380px] sm:h-[450px] lg:h-[480px] w-full overflow-hidden">
+                            <img src="assests/home2bg.jpg" alt="Orthodontic Patient Smile Consultation" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                            <!-- Subtle Vignette & Gradient Overlays -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-dental-dark via-dental-dark/20 to-transparent"></div>
+                            <div class="absolute inset-0 bg-dental-blue/10 mix-blend-overlay"></div>
+                        </div>
+
+                        <!-- Bottom In-Image Status Bar -->
+                        <div class="absolute inset-x-4 bottom-4 bg-[#0B1E26]/90 backdrop-blur-md rounded-2xl p-3.5 border border-white/10 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2.5">
+                                <span class="relative flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                </span>
+                                <span class="text-white font-medium">New Consultations Available This Week</span>
+                            </div>
+                            <a href="appointment.html" class="text-dental-teal font-semibold hover:underline inline-flex items-center gap-1">
+                                Book Now <i class="fas fa-arrow-right text-[10px] rtl:rotate-180"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Floating Glassmorphism Badge 1 (Top Start) -->
+                  
+
+                    <!-- Floating Glassmorphism Badge 2 (Bottom End) -->
+                </div>
+            </div>
         </div>
-        <div class="relative z-10 text-center px-6 max-w-5xl">
-            <div class="inline-flex items-center gap-2 bg-dental-teal/20 backdrop-blur-sm px-5 py-2 rounded-full mb-6 border border-dental-teal/30">
-                <span class="w-2 h-2 bg-dental-teal rounded-full animate-pulse"></span>
-                <span class="text-dental-teal text-xs uppercase tracking-widest font-bold">Premium Orthodontic Center</span>
-            </div>
-            <h1 class="hero-title font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-[1.05] mb-6 font-medium">
-                Perfect <span class="italic text-dental-teal">Smiles</span> <br>With Expert Braces
-            </h1>
-            <p class="text-gray-300 text-lg md:text-xl lg:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
-                Specializing in traditional braces, clear aligners, and comprehensive orthodontic care for children, teens, and adults.
-            </p>
-            <div class="flex flex-wrap gap-5 justify-center">
-                <a href="appointment.html" class="btn-primary shadow-lg text-base md:text-lg"><i class="fas fa-calendar-check"></i> Book Appointment</a>
-                <a href="services.html" class="btn-outline border-white text-white hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-info-circle"></i> Explore Services</a>
-            </div>
-            <div class="mt-12 flex flex-wrap justify-center gap-6 md:gap-10 text-sm md:text-base">
-                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 100% Satisfaction</span>
-                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 15+ Specialists</span>
-                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 10,000+ Smiles</span>
-                <span class="text-white/80 flex items-center gap-2"><i class="fas fa-check-circle text-dental-teal"></i> 98% Success Rate</span>
+
+        <!-- Integrated Bottom Treatment Quick-Selector Bar -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 mt-8 lg:mt-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <a href="treatments.html" class="group bg-white/5 hover:bg-white/10 dark:bg-black/70 dark:hover:bg-dental-alt backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-dental-teal/50 transition-all duration-300 transform hover:-translate-y-1 block shadow-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-dental-teal/20 text-dental-teal flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-teeth"></i>
+                        </div>
+                        <span class="text-xs text-dental-teal font-semibold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-flex items-center gap-1">
+                            Explore <i class="fas fa-arrow-right text-[10px] rtl:rotate-180"></i>
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Clear Aligners</h3>
+                    <p class="text-gray-300 text-xs leading-relaxed">Nearly invisible, custom removable trays designed for discreet teeth straightening.</p>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="treatments.html" class="group bg-white/5 hover:bg-white/10 dark:bg-black/70 dark:hover:bg-dental-alt backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-dental-teal/50 transition-all duration-300 transform hover:-translate-y-1 block shadow-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-dental-teal/20 text-dental-teal flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <span class="text-xs text-dental-teal font-semibold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-flex items-center gap-1">
+                            Explore <i class="fas fa-arrow-right text-[10px] rtl:rotate-180"></i>
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Ceramic Braces</h3>
+                    <p class="text-gray-300 text-xs leading-relaxed">Tooth-colored brackets blend seamlessly with enamel for powerful, subtle correction.</p>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="treatments.html" class="group bg-white/5 hover:bg-white/10 dark:bg-black/70 dark:hover:bg-dental-alt backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-dental-teal/50 transition-all duration-300 transform hover:-translate-y-1 block shadow-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-dental-teal/20 text-dental-teal flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <span class="text-xs text-dental-teal font-semibold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-flex items-center gap-1">
+                            Explore <i class="fas fa-arrow-right text-[10px] rtl:rotate-180"></i>
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Kids & Teen Ortho</h3>
+                    <p class="text-gray-300 text-xs leading-relaxed">Early phase-one guidance and fun colored ties for developing smiles.</p>
+                </a>
+
+                <!-- Card 4 -->
+                <a href="treatments.html" class="group bg-white/5 hover:bg-white/10 dark:bg-black/70 dark:hover:bg-dental-alt backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-dental-teal/50 transition-all duration-300 transform hover:-translate-y-1 block shadow-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-dental-teal/20 text-dental-teal flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <span class="text-xs text-dental-teal font-semibold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-flex items-center gap-1">
+                            Explore <i class="fas fa-arrow-right text-[10px] rtl:rotate-180"></i>
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-white text-base mb-1">Accelerated Care</h3>
+                    <p class="text-gray-300 text-xs leading-relaxed">High-frequency vibration technology reducing treatment duration safely.</p>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- ===== SECTION 2: WHY CHOOSE US (Features Grid) ===== -->
-    <!-- ===== SECTION: WHY CHOOSE US - TESTIMONIAL STYLE ===== -->
-<section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Why OrthoSmile</span>
-            <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">What <span class="italic text-dental-teal">Sets</span> Us Apart</h2>
-            <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4">Hear from our patients why they trust us with their smiles.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
-            <!-- Feature 1 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-user-md text-xl text-dental-teal"></i>
-                    </div>
-                    <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <h4 class="font-bold text-sm">Expert Specialists</h4>
-                    </div>
-                </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The team at OrthoSmile is incredible. Every specialist I've seen has been knowledgeable, gentle, and truly caring."</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">JM</div>
-                    <div>
-                        <p class="text-xs font-semibold">Jessica Martinez</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Braces Patient</p>
-                    </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">15+ Specialists</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">100+ Certifications</span>
-                </div>
+    <section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Why OrthoSmile</span>
+                <h2 class="section-title font-serif text-4xl md:text-5xl text-gray-900 dark:text-white font-bold mt-2">What <span class="italic text-dental-teal">Sets</span> Us Apart</h2>
+                <div class="w-20 h-1.5 bg-dental-teal mx-auto mt-4 rounded-full"></div>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4">Dedicated orthodontic precision with modern 3D technology, comfortable care, and personalized treatment plans.</p>
             </div>
-
-            <!-- Feature 2 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-microscope text-xl text-dental-teal"></i>
-                    </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Feature 1: Expert Specialists -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">Board Certified</span>
                         </div>
-                        <h4 class="font-bold text-sm">Advanced Technology</h4>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">Expert Specialists</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Dedicated orthodontists with over 15 years of clinical mastery designing customized alignment plans for children, teens, and adults.</p>
+                    </div>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> 15+ Specialists
+                        </span>
+                        <a href="about.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            Learn more <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The technology at OrthoSmile is amazing. My crown was done in one visit thanks to their 3D printing system."</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">RT</div>
-                    <div>
-                        <p class="text-xs font-semibold">Robert Thompson</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Invisalign Patient</p>
-                    </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">10+ Tech Systems</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">3D Digital Scans</span>
-                </div>
-            </div>
 
-            <!-- Feature 3 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-smile text-xl text-dental-teal"></i>
-                    </div>
+                <!-- Feature 2: Advanced Technology -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">iTero® Scanners</span>
                         </div>
-                        <h4 class="font-bold text-sm">Comfort First</h4>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">3D Digital Precision</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Skip messy impression trays with rapid digital optical scanning, enabling real-time 3D smile simulations before treatment starts.</p>
+                    </div>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> Zero Putty Trays
+                        </span>
+                        <a href="service-detail.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            Learn more <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"I was nervous about my orthodontic work, but the team made me feel so comfortable. I actually enjoyed my visit!"</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">AL</div>
-                    <div>
-                        <p class="text-xs font-semibold">Amanda Lee</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Teen Patient</p>
-                    </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">Colorful Braces</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">95% Less Anxiety</span>
-                </div>
-            </div>
 
-            <!-- Feature 4 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-clock text-xl text-dental-teal"></i>
-                    </div>
+                <!-- Feature 3: Comfort First -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-smile-beam"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">Gentle Care</span>
                         </div>
-                        <h4 class="font-bold text-sm">Flexible Scheduling</h4>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">Comfort-First Philosophy</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Smooth, low-profile brackets and custom-trimmed aligners designed to minimize mouth irritation and eliminate treatment anxiety.</p>
+                    </div>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> 95% Less Irritation
+                        </span>
+                        <a href="services.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            Learn more <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"I love that OrthoSmile offers evening appointments. I can see the dentist after work without taking time off."</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">MC</div>
-                    <div>
-                        <p class="text-xs font-semibold">Michael Chen</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Adult Braces</p>
-                    </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">7 Days Available</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">6 AM - 9 PM</span>
-                </div>
-            </div>
 
-            <!-- Feature 5 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-hand-holding-usd text-xl text-dental-teal"></i>
-                    </div>
+                <!-- Feature 4: Flexible Scheduling -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">Evenings & Weekends</span>
                         </div>
-                        <h4 class="font-bold text-sm">Affordable Care</h4>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">Flexible Scheduling</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Appointments scheduled around your life with early morning, evening, and weekend slots so you never have to miss work or school.</p>
+                    </div>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> 7 Days / Week
+                        </span>
+                        <a href="appointment.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            Book visit <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"The pricing is transparent and they worked with my insurance. No surprises, just great care."</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">SR</div>
-                    <div>
-                        <p class="text-xs font-semibold">Sarah Reynolds</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Insurance Patient</p>
-                    </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">0% Financing</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">Insurance Accepted</span>
-                </div>
-            </div>
 
-            <!-- Feature 6 -->
-            <div class="group bg-dental-light dark:bg-dental-dark/50 rounded-3xl p-6 md:p-8 border border-dental-teal/10 hover:border-dental-teal/40 transition-all shadow-sm hover:shadow-xl flex flex-col h-full">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-dental-teal/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-star text-xl text-dental-teal"></i>
-                    </div>
+                <!-- Feature 5: Affordable Financing -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <div class="flex gap-1 text-dental-teal text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">0% Interest</span>
                         </div>
-                        <h4 class="font-bold text-sm">Proven Results</h4>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">Affordable Financing</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Transparent, all-inclusive pricing with direct insurance billing and interest-free in-house monthly payment plans to fit any family budget.</p>
+                    </div>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> Zero Down Options
+                        </span>
+                        <a href="pricing.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            View plans <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400 text-sm italic">"My smile has completely transformed. I get compliments everywhere I go. Thank you, OrthoSmile!"</p>
-                <div class="mt-auto pt-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-dental-teal/10 flex items-center justify-center text-xs font-bold text-dental-teal">JW</div>
+
+                <!-- Feature 6: Proven Results -->
+                <div class="group bg-dental-light dark:bg-dental-alt rounded-3xl p-7 border border-dental-teal/10 dark:border-white/10 hover:border-dental-teal/40 dark:hover:border-dental-teal/40 hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between">
                     <div>
-                        <p class="text-xs font-semibold">James Wilson</p>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Smile Makeover</p>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-dental-teal/10 dark:bg-dental-teal/20 text-dental-teal flex items-center justify-center text-2xl group-hover:bg-dental-teal group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dental-dark text-dental-teal border border-dental-teal/20 shadow-xs">4.9 ★ Rating</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2.5 group-hover:text-dental-teal transition-colors duration-200">Proven Lifetime Results</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Over 10,000 successful smile transformations backed by post-treatment retainers and our comprehensive lifetime smile guarantee.</p>
                     </div>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">4.9/5 Rating</span>
-                    <span class="inline-block bg-teal-50 text-teal-800 dark:bg-dental-teal/20 dark:text-dental-teal text-xs font-medium px-2 py-0.5 rounded-full">10,000+ Smiles</span>
+                    <div class="pt-5 mt-6 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between text-xs">
+                        <span class="font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle text-dental-teal"></i> 10,000+ Smiles
+                        </span>
+                        <a href="case-studies.html" class="font-semibold text-dental-teal hover:underline inline-flex items-center gap-1">
+                            View cases <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- ===== SECTION 3: INTERACTIVE STATS + CTA ===== -->
     <section class="py-20 md:py-28 px-6 bg-gradient-to-br from-dental-blue via-dental-dark to-dental-dark text-white">
@@ -761,7 +879,7 @@
     </section>
 
     <!-- ===== SECTION 4: OUR PROCESS ===== -->
-    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-dark/80 transition-colors duration-300">
+    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-alt transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">How It Works</span>
@@ -872,7 +990,7 @@
             <h2 class="font-serif text-4xl md:text-6xl font-bold mb-4">Ready to <span class="italic text-dental-teal">Transform</span> Your Smile?</h2>
             <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">Join thousands of happy patients who trusted us with their smiles. Book your appointment today and experience the OrthoSmile difference.</p>
             <div class="flex flex-wrap gap-5 justify-center mb-8">
-                <a href="appointment.html" class="btn-primary bg-dental-teal text-dental-blue hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-paper-plane"></i> Book Now</a>
+                <a href="appointment.html" class="btn-primary bg-dental-teal text-white hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-paper-plane"></i> Book Now</a>
                 <a href="tel:8885550123" class="btn-outline border-white text-white hover:bg-white hover:text-dental-blue text-base md:text-lg"><i class="fas fa-phone"></i> Call (888) 555-0123</a>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto text-sm">
@@ -896,28 +1014,76 @@
         </div>
     </section>
 
-    <!-- ===== FOOTER ===== -->
+        <!-- ===== FOOTER ===== -->
     <footer class="pt-16 pb-8 bg-black text-white">
-        <div class="max-w-[1400px] mx-auto px-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <div class="text-center md:text-start">
-                    <a href="index.html" class="logo-wrapper justify-center md:justify-start mb-6 group">
-                        <div class="logo-icon"><i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i></div>
-                        <div class="text-left"><span class="logo-text">Ortho<span class="highlight">Smile</span></span><span class="logo-sub">BRACES CLINIC</span></div>
+        <div class="max-w-[1400px] mx-auto px-5 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 xl:gap-10">
+                <!-- Col 1: Brand -->
+                <div class="text-center md:text-start lg:col-span-4">
+                    <a href="index.html" class="logo-wrapper mb-6 justify-center md:justify-start group" style="padding: 0; width: 100%;">
+                        <div class="logo-icon shadow-lg shadow-black/20">
+                            <i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <span class="logo-text drop-shadow-sm">Ortho<span class="highlight">Smile</span></span>
+                            <span class="logo-sub">BRACES CLINIC</span>
+                        </div>
                     </a>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Your trusted partner for comprehensive orthodontic care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm mx-auto md:mx-0">Your trusted partner for comprehensive dental care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
                     <div class="flex gap-3 justify-center md:justify-start">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Quick Links</h3><ul class="space-y-2 text-gray-400"><li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li><li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li><li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li></ul></div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Treatments</h3><ul class="space-y-2 text-gray-400"><li><a href="#" class="hover:text-dental-teal transition block">Traditional Braces</a></li><li><a href="#" class="hover:text-dental-teal transition block">Clear Aligners</a></li><li><a href="#" class="hover:text-dental-teal transition block">Orthodontics</a></li><li><a href="#" class="hover:text-dental-teal transition block">Oral Surgery</a></li></ul></div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Contact</h3><ul class="space-y-3 text-gray-400"><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-map-marker-alt text-dental-teal w-5"></i><span>123 Dental Ave, Los Angeles, CA</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-phone text-dental-teal w-5"></i><span>(888) 555-0123</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-envelope text-dental-teal w-5"></i><span>info@OrthoSmiledental.com</span></li></ul></div>
+
+                <!-- Col 2: Quick Links -->
+                <div class="text-center md:text-start lg:col-span-2">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Quick Links</h3>
+                    <ul class="space-y-2.5 text-gray-400 text-sm">
+                        <li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li>
+                        <li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li>
+                        <li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li>
+                        <li><a href="pricing.html" class="hover:text-dental-teal transition block">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Treatments -->
+                <div class="text-center md:text-start lg:col-span-2 xl:col-span-3">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Treatments</h3>
+                    <ul class="space-y-2.5 text-gray-400 text-sm">
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">General Dentistry</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Cosmetic Dentistry</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Orthodontics</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Oral Surgery</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Contact -->
+                <div class="text-center md:text-start lg:col-span-4 xl:col-span-3 min-w-0">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Contact</h3>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li class="flex gap-2.5 justify-center md:justify-start items-start">
+                            <i class="fas fa-map-marker-alt text-dental-teal w-5 pt-1 flex-shrink-0"></i>
+                            <span class="leading-relaxed">123 Dental Ave, Los Angeles, CA</span>
+                        </li>
+                        <li class="flex gap-2.5 justify-center md:justify-start items-center">
+                            <i class="fas fa-phone text-dental-teal w-5 flex-shrink-0"></i>
+                            <a href="tel:8885550123" class="hover:text-dental-teal transition">(888) 555-0123</a>
+                        </li>
+                        <li class="flex gap-2.5 justify-center md:justify-start items-center min-w-0">
+                            <i class="fas fa-envelope text-dental-teal w-5 flex-shrink-0"></i>
+                            <a href="mailto:info@OrthoSmiledental.com" class="hover:text-dental-teal transition truncate min-w-0" title="info@OrthoSmiledental.com">info@OrthoSmiledental.com</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono"><p>&copy; 2026 OrthoSmile Orthodontics &mdash; Premium Orthodontic Center. All rights reserved.</p></div>
+
+            <!-- Bottom Copyright -->
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono">
+                <p>&copy; 2026 OrthoSmile Dental &mdash; Premium Oral Care Center. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 

@@ -22,7 +22,9 @@
                         'dental-blue': '#1A5276',
                         'dental-teal': '#1ABC9C',
                         'dental-light': '#F0F8FF',
-                        'dental-dark': '#0B1E26',
+                        'dental-dark': '#000000',
+                        'dental-alt': '#111A22',
+                        'dental-card': '#16222E',
                     }
                 }
             }
@@ -38,7 +40,7 @@
             background-color: #F0F8FF;
             transition: background-color 0.3s, color 0.3s;
         }
-        .dark body { background-color: #0B1E26; color: #E2E8F0; }
+        .dark body { background-color: #000000; color: #E2E8F0; }
 
         /* Sidebar */
         #sidebar {
@@ -108,8 +110,8 @@
             box-shadow: 0 4px 12px -4px rgba(26,82,118,0.06);
         }
         .dark .dash-card {
-            background: #14262F;
-            border-color: #1E3844;
+            background: #111A22;
+            border-color: #1E2D3A;
         }
         .dash-card:hover {
             border-color: #1ABC9C;
@@ -318,13 +320,13 @@
                 <button id="mobile-menu-open" class="lg:hidden p-2 rounded-xl hover:bg-dental-light dark:hover:bg-white/5 transition" aria-label="Open menu">
                     <i class="fas fa-bars text-lg text-dental-blue dark:text-white"></i>
                 </button>
-                <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-md shadow-dental-teal/25" style="background-color:#1A5276;">
+                <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0 group">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-md shadow-dental-teal/25 bg-dental-blue group-hover:scale-105 transition-transform">
                         <i class="fas fa-smile-beam text-dental-teal text-sm sm:text-base"></i>
                     </div>
-                    <div class="hidden xs:block">
+                    <div class="flex flex-col">
                         <span class="text-base sm:text-lg font-bold text-dental-blue dark:text-white leading-tight block">
-                            Ortho<span style="color:#1ABC9C;">Care</span>
+                            Ortho<span class="text-dental-teal">Smile</span>
                         </span>
                         <span class="text-[9px] tracking-[0.18em] uppercase text-gray-400 font-semibold block">Patient Portal</span>
                     </div>
@@ -369,8 +371,16 @@
             <!-- ============ SIDEBAR ============ -->
             <aside id="sidebar" class="lg:sticky lg:top-24 lg:h-fit w-72 flex-shrink-0 bg-white dark:bg-dental-dark lg:bg-transparent lg:dark:bg-transparent">
                 <div class="dash-card p-4 sm:p-5 h-full lg:h-auto">
-                    <div class="flex lg:hidden justify-between items-center mb-5">
-                        <span class="font-bold text-dental-teal">Patient Menu</span>
+                    <div class="flex lg:hidden justify-between items-center mb-5 pb-3 border-b border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-dental-blue">
+                                <i class="fas fa-smile-beam text-dental-teal text-sm"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-dental-blue dark:text-white leading-tight">Ortho<span class="text-dental-teal">Smile</span></span>
+                                <span class="text-[8px] uppercase tracking-wider text-gray-400">Patient Portal</span>
+                            </div>
+                        </div>
                         <button id="mobile-menu-close" class="p-2 hover:bg-dental-light dark:hover:bg-white/5 rounded-lg" aria-label="Close menu">
                             <i class="fas fa-times text-dental-blue dark:text-white"></i>
                         </button>

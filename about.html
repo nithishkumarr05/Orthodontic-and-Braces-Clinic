@@ -22,7 +22,9 @@
                         'dental-blue': '#1A5276',
                         'dental-teal': '#1ABC9C',
                         'dental-light': '#F0F8FF',
-                        'dental-dark': '#0B1E26',
+                        'dental-dark': '#000000',
+                        'dental-alt': '#111A22',
+                        'dental-card': '#16222E',
                     }
                 }
             }
@@ -53,10 +55,12 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .dark .navbar-wrapper {
-            background: rgba(11, 30, 38, 0.95);
+            background: rgba(0, 0, 0, 0.92);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         .dark .navbar-wrapper.scrolled {
-            background: rgba(11, 30, 38, 1);
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
         }
 
         .navbar-inner {
@@ -142,7 +146,8 @@
             border: 1px solid rgba(26, 188, 156, 0.15);
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
         }
-        .dark .dropdown-menu { background: rgba(11, 30, 38, 0.95); }
+        .dark .dropdown-menu { background: rgba(0, 0, 0, 0.92);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
         .dropdown-wrapper:hover .dropdown-menu,
         .dropdown-wrapper.open .dropdown-menu {
             opacity: 1;
@@ -195,7 +200,7 @@
         .btn-rounded.login:hover { background: rgba(255, 255, 255, 0.10); border-color: #1ABC9C; color: #1ABC9C; }
         .btn-rounded.signup {
             background: #1ABC9C;
-            color: #1A5276;
+            color: #FFFFFF;
             border: 1.5px solid #1ABC9C;
         }
         .btn-rounded.signup:hover {
@@ -248,7 +253,7 @@
             transition: max-height 0.4s ease;
             margin: 0 4px;
         }
-        .dark .mobile-menu { background: rgba(11, 30, 38, 0.96); }
+        .dark .mobile-menu { background: rgba(0, 0, 0, 0.98); }
         .mobile-menu.open { max-height: 600px; }
         .mobile-menu-item {
             display: block;
@@ -303,10 +308,10 @@
         /* ===== OTHER COMPONENTS ===== */
         .btn-primary {
             background: #1ABC9C;
-            color: #1A5276;
+            color: #FFFFFF;
             padding: 0.8rem 2rem;
             border-radius: 60px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
@@ -316,7 +321,7 @@
             cursor: pointer;
             text-decoration: none;
         }
-        .btn-primary:hover { background: #1A5276; color: #1ABC9C; transform: scale(1.03); }
+        .btn-primary:hover { background: #1A5276; color: #FFFFFF; transform: scale(1.03); }
         .btn-outline {
             border: 2px solid #1ABC9C;
             background: transparent;
@@ -341,8 +346,8 @@
             border: 1px solid #E8E8E8;
         }
         .dark .about-card {
-            background: #1A2A3A;
-            border-color: #2A3A4A;
+            background: #111A22;
+            border-color: rgba(255, 255, 255, 0.08);
         }
         .about-card:hover {
             transform: translateY(-6px);
@@ -527,7 +532,7 @@
     </section>
 
     <!-- ===== SECTION 3: MISSION & VALUES (Cards) ===== -->
-    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-dark/80 transition-colors duration-300">
+    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-alt transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Core Principles</span>
@@ -602,7 +607,7 @@
     </section>
 
     <!-- ===== SECTION 5: OUR HISTORY TIMELINE ===== -->
-    <section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
+    <section class="py-20 md:py-28 px-6 bg-dental-light dark:bg-dental-alt transition-colors duration-300">
         <div class="max-w-5xl mx-auto">
             <div class="text-center mb-20">
                 <span class="text-dental-teal font-bold uppercase tracking-widest text-sm">Our Journey</span>
@@ -674,7 +679,7 @@
     <!-- ===== SECTION 6: CTA / BOOK APPOINTMENT ===== -->
     <section class="py-20 md:py-28 px-6 bg-white dark:bg-dental-dark transition-colors duration-300">
         <div class="max-w-6xl mx-auto">
-            <div class="bg-dental-light dark:bg-dental-dark/60 rounded-[3rem] p-10 md:p-16 shadow-2xl border border-dental-teal/20">
+            <div class="bg-dental-light dark:bg-dental-alt rounded-[3rem] p-10 md:p-16 shadow-2xl border border-dental-teal/20">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <span class="text-dental-teal font-bold tracking-[0.2em] uppercase text-sm mb-4 block">Get Started</span>
@@ -704,28 +709,76 @@
         </div>
     </section>
 
-    <!-- ===== FOOTER ===== -->
+        <!-- ===== FOOTER ===== -->
     <footer class="pt-16 pb-8 bg-black text-white">
-        <div class="max-w-[1400px] mx-auto px-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <div class="text-center md:text-start">
-                    <a href="index.html" class="logo-wrapper justify-center md:justify-start mb-6 group">
-                        <div class="logo-icon"><i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i></div>
-                        <div class="text-left"><span class="logo-text">Ortho<span class="highlight">Smile</span></span><span class="logo-sub">BRACES CLINIC</span></div>
+        <div class="max-w-[1400px] mx-auto px-5 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 xl:gap-10">
+                <!-- Col 1: Brand -->
+                <div class="text-center md:text-start lg:col-span-4">
+                    <a href="index.html" class="logo-wrapper mb-6 justify-center md:justify-start group" style="padding: 0; width: 100%;">
+                        <div class="logo-icon shadow-lg shadow-black/20">
+                            <i class="fas fa-smile-beam group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <span class="logo-text drop-shadow-sm">Ortho<span class="highlight">Smile</span></span>
+                            <span class="logo-sub">BRACES CLINIC</span>
+                        </div>
                     </a>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Your trusted partner for comprehensive dental care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm mx-auto md:mx-0">Your trusted partner for comprehensive dental care. Exceptional treatment, compassionate service, and beautiful smiles.</p>
                     <div class="flex gap-3 justify-center md:justify-start">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Quick Links</h3><ul class="space-y-2 text-gray-400"><li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li><li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li><li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li></ul></div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Treatments</h3><ul class="space-y-2 text-gray-400"><li><a href="#" class="hover:text-dental-teal transition block">General Dentistry</a></li><li><a href="#" class="hover:text-dental-teal transition block">Cosmetic Dentistry</a></li><li><a href="#" class="hover:text-dental-teal transition block">Orthodontics</a></li><li><a href="#" class="hover:text-dental-teal transition block">Oral Surgery</a></li></ul></div>
-                <div class="text-center md:text-start"><h3 class="text-white text-xl font-bold mb-5 footer-heading border-l-3 border-dental-teal pl-3">Contact</h3><ul class="space-y-3 text-gray-400"><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-map-marker-alt text-dental-teal w-5"></i><span>123 Dental Ave, Los Angeles, CA</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-phone text-dental-teal w-5"></i><span>(888) 555-0123</span></li><li class="flex gap-2 justify-center md:justify-start"><i class="fas fa-envelope text-dental-teal w-5"></i><span>info@OrthoSmiledental.com</span></li></ul></div>
+
+                <!-- Col 2: Quick Links -->
+                <div class="text-center md:text-start lg:col-span-2">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Quick Links</h3>
+                    <ul class="space-y-2.5 text-gray-400 text-sm">
+                        <li><a href="about.html" class="hover:text-dental-teal transition block">About Us</a></li>
+                        <li><a href="services.html" class="hover:text-dental-teal transition block">Services</a></li>
+                        <li><a href="dentists.html" class="hover:text-dental-teal transition block">Dentists</a></li>
+                        <li><a href="pricing.html" class="hover:text-dental-teal transition block">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Treatments -->
+                <div class="text-center md:text-start lg:col-span-2 xl:col-span-3">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Treatments</h3>
+                    <ul class="space-y-2.5 text-gray-400 text-sm">
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">General Dentistry</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Cosmetic Dentistry</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Orthodontics</a></li>
+                        <li><a href="treatments.html" class="hover:text-dental-teal transition block">Oral Surgery</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Contact -->
+                <div class="text-center md:text-start lg:col-span-4 xl:col-span-3 min-w-0">
+                    <h3 class="text-white text-xl font-bold mb-5 footer-heading">Contact</h3>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li class="flex gap-2.5 justify-center md:justify-start items-start">
+                            <i class="fas fa-map-marker-alt text-dental-teal w-5 pt-1 flex-shrink-0"></i>
+                            <span class="leading-relaxed">123 Dental Ave, Los Angeles, CA</span>
+                        </li>
+                        <li class="flex gap-2.5 justify-center md:justify-start items-center">
+                            <i class="fas fa-phone text-dental-teal w-5 flex-shrink-0"></i>
+                            <a href="tel:8885550123" class="hover:text-dental-teal transition">(888) 555-0123</a>
+                        </li>
+                        <li class="flex gap-2.5 justify-center md:justify-start items-center min-w-0">
+                            <i class="fas fa-envelope text-dental-teal w-5 flex-shrink-0"></i>
+                            <a href="mailto:info@OrthoSmiledental.com" class="hover:text-dental-teal transition truncate min-w-0" title="info@OrthoSmiledental.com">info@OrthoSmiledental.com</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono"><p>&copy; 2026 OrthoSmile Dental &mdash; Premium Oral Care Center. All rights reserved.</p></div>
+
+            <!-- Bottom Copyright -->
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-xs font-mono">
+                <p>&copy; 2026 OrthoSmile Dental &mdash; Premium Oral Care Center. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
